@@ -38,6 +38,11 @@ class LatheSite extends Timber\Site {
 			'caption'
 		));
 
+		add_filter('timber_context', function($context) {
+			$context['pagination'] = Timber::get_pagination();
+			return $context;
+		});
+
 		add_action('after_setup_theme', function() {
 			load_theme_textdomain('lathe', get_template_directory() . '/languages');
 		});

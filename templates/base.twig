@@ -6,11 +6,11 @@
 		{% endblock %}
 	</head>
 	<body class="{{body_class}}">
-		<main id='main-content'>
-			{% block header %}
-				{% include 'components/header.twig' %}
-			{% endblock %}
+		{% block header %}
+			{% include 'components/header.twig' %}
+		{% endblock %}
 
+		<main id='main'>
 			{% if title %}
 				<h1 class='archive__title'>{{ title }}</h1>
 			{% endif %}

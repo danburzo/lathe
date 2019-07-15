@@ -1,11 +1,18 @@
-<a class='skip-link' href='#main-content'>
-	{{__("Skip to content", "lathe")}}
-</a>
+<header>
+	<a class='skip-to-content' href='#main'>
+		{{__("Skip to content", "lathe")}}
+	</a>
 
-<nav>
-	{% 
-		include "components/menu.twig" with {
-			'menu': menu.get_items
-		} 
-	%}
-</nav>
+	<h1>
+		<a href='{{site.link}}'>{{ site.name }}</a>
+	</h1>
+	<nav>
+		{% 
+			include "components/menu.twig" with {
+				'menu': menu.get_items
+			}
+		%}
+	</nav>
+
+	{% include "components/searchbox.twig" %}
+</header>
