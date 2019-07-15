@@ -26,3 +26,7 @@ header {
 	z-index: 100;
 	top: 0;
 }
+
+article img {
+	max-width: 100%;
+}

@@ -27,6 +27,7 @@ Timber::$dirname = 'templates';
 class LatheSite extends Timber\Site {
 
 	function __construct() {
+		
 		add_theme_support('post-formats');
 		add_theme_support('post-thumbnails');
 		add_theme_support('menus');
@@ -38,8 +39,19 @@ class LatheSite extends Timber\Site {
 			'caption'
 		));
 
+		add_action('init', function() {
+			register_nav_menus(
+				array(
+					'main-menu' => __('Main Menu', 'lathe'),
+					'footer-menu' => __('Footer Menu', 'lathe')
+				)
+			);
+		});
+
 		add_filter('timber_context', function($context) {
 			$context['pagination'] = Timber::get_pagination();
+			$context['main_menu'] = new Timber\Menu('main-menu');
+			$context['footer_menu'] = new Timber\Menu('footer-menu');
 			return $context;
 		});
 

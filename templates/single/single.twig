@@ -1,19 +1,23 @@
 {% extends "base.twig" %}
 
 {% block content %}
-	<article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
-		<div class='post__image'>
-			{% if post.thumbnail %}
-				<img src='{{TimberImage(post.thumbnail.src)}}'/>
-			{% endif %}
-		</div>
+	<article class="h-entry post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
 
-		<div class='post__header'>
-			<h1>{{ post.title }}</h1>
+		{% if post.thumbnail %}
+		<div class='post__image'>
+			<img src='{{TimberImage(post.thumbnail.src)}}'/>
 		</div>
+		{% endif %}
+
+		{% block byline %}
+		<header>
+			<h1 class='p-name'>{{ post.title }}</h1>
+		</header>
+		{% endblock %}
 		
-		<div class='post__content'>
+		<div class='e-content'>
 			{{ post.content }}
 		</div>
+		
 	</article>
 {% endblock %}

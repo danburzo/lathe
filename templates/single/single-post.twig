@@ -1,20 +1,12 @@
-{% extends "base.twig" %}
+{% extends "single/single.twig" %}
 
-{% block content %}
-	<article {{fn('post_class')}} id="post-{{ post.ID }}">
-		<div class='post__image'>
-			{% if post.thumbnail %}
-				<img src='{{TimberImage(post.thumbnail.src)}}'/>
-			{% endif %}
-		</div>
-
-		<div class='post__header'>
-			<h1>{{ post.title }}</h1>
-			<p class='post__date'>{{ post.post_date | date("d/m/Y") }}</p>
-		</div>
-		
-		<div class='post__content'>
-			{{ post.content }}
-		</div>
-	</article>
+{% block byline %}
+<header>
+	<h1 class='p-name'>{{ post.title }}</h1>
+	<p>
+		<time class='dt-published' datetime='{{post.post_date | date("c") }}'>
+			{{ post.post_date | date("d/m/Y") }}
+		</time>
+	</p>
+</header>
 {% endblock %}
