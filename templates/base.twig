@@ -10,15 +10,14 @@
 			{% block header %}
 				{% include 'components/header.twig' %}
 			{% endblock %}
-			<section role="main">
-				{% if title %}
-					<h1 class='archive__title'>{{ title }}</h1>
-				{% endif %}
 
-				{% block content %}
-					{{__("Sorry, no content", "Lathe")}}
-				{% endblock %}
-			</section>
+			{% if title %}
+				<h1 class='archive__title'>{{ title }}</h1>
+			{% endif %}
+
+			{% block content %}
+				{{__("Sorry, no content", "lathe")}}
+			{% endblock %}
 		</main>
 
 		{% block footer %}

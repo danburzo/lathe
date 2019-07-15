@@ -13,12 +13,8 @@
 			<p class='post__date'>{{ post.post_date | date("d/m/Y") }}</p>
 		</div>
 		
-		<div class='row'>
-			<div class='col-md-8'>
-				<div class='post__content'>
-					{{ post.content }}
-				</div>
-			</div>
+		<div class='post__content'>
+			{{ post.content }}
 		</div>
 	</article>
 {% endblock %}

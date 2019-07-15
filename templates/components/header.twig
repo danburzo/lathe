@@ -1,3 +1,11 @@
 <a class='skip-link' href='#main-content'>
-	{{__("Skip to content", "Lathe")}}
+	{{__("Skip to content", "lathe")}}
 </a>
+
+<nav>
+	{% 
+		include "components/menu.twig" with {
+			'menu': menu.get_items
+		} 
+	%}
+</nav>
