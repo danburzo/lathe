@@ -1,0 +1,29 @@
+{% extends "base.twig" %}
+
+{% block content %}
+	
+	{% if posts | length %} 
+
+		{% for row in posts | batch(3) %}
+		<div class='row row--spaced'>
+			{% for post in row %}
+			<div class='col-md-4'>
+				{% 
+					include [
+						'tease/tease-' ~ post.post_type ~ '.twig', 
+						'tease/tease-post.twig',
+						'tease/tease.twig'
+					] 
+				%}
+			</div>
+			{% endfor %}
+		</div>
+		{% endfor %}
+
+		{% include 'components/pagination.twig' %}
+	{% else %}
+		{% block no_content %}
+			{{__("No articles", "Lathe") }}
+		{% endblock %}
+	{% endif %}
+{% endblock %}

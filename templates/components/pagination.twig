@@ -1,0 +1,39 @@
+{% if pagination.prev or pagination.next or pagination.pages | length %}
+<div class="pag pag--general">
+    {% if pagination.prev %}
+        <a 
+            href="{{pagination.prev.link}}" 
+            class="pag__item"
+        >
+            &larr; {{__("Previous", "Lathe")}}
+        </a>
+    {% else %}
+        <span class='pag__item pag__item--inactive'>
+            &larr; {{__("Previous", "Lathe")}}
+        </span>
+    {% endif %}
+    <ul class="pag__list">
+        {% for page in pagination.pages %}
+            <li>
+                {% if page.link %}
+                    <a href="{{page.link}}" class="pag__item {{page.class}}">{{page.title}}</a>
+                {% else %}
+                    <span class="pag__item pag__item--current {{page.class}}">{{page.title}}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% if pagination.next %}
+        <a 
+            href="{{pagination.next.link}}" 
+            class="pag__item"
+        >
+            {{__("Next", "Lathe")}} &rarr;
+        </a>
+    {% else %}
+        <span class='pag__item pag__item--inactive'>
+            {{__("Next", "Lathe")}} &rarr;
+        </span>
+    {% endif %}
+</div>
+{% endif %}

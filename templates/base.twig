@@ -1,0 +1,31 @@
+<!doctype html>
+<html class="no-js" {{site.language_attributes}}>
+	<head>
+		{% include 'components/head.twig' %}
+		{% block head %}
+			<!-- additional things here -->
+		{% endblock %}
+	</head>
+	<body class="{{body_class}}">
+		<div>
+			{% block header %}
+				{% include 'components/header.twig' %}
+			{% endblock %}
+			<section role="main">
+				<div class='container'>
+					{% if title %}
+						<h1 class='archive__title'>{{ title }}</h1>
+					{% endif %}
+
+					{% block content %}
+						Sorry, no content
+					{% endblock %}
+				</div>
+			</section>
+		</div>
+
+		{% block footer %}
+			{% include 'components/footer.twig' %}
+		{% endblock %}
+	</body>
+</html>
