@@ -1,14 +1,35 @@
+{#
+	Things to include in the HTML <head>
+	------------------------------------
+
+	Note: we're not setting a <title> because 
+	we've defined that our theme supports `title-tag`, 
+	which means WordPress will generate one for us.
+
+	If you'd like to hardcode a <title> tag, remove
+	add_theme_support('title-tag') from `functions.php`.
+ #}
+
 <meta charset="{{site.charset}}" />
+<meta http-equiv="Content-Type" content="text/html; charset={{site.charset}}" />
 
 <meta name="description" content="{{site.description}}">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+{# Platform Compatibility #}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="stylesheet" href="{{site.theme.link}}/style.css" type="text/css"/>
 <link rel="pingback" href="{{site.pingback_url}}" />
+
+{# Favicon #}
+<link rel="icon" type="image/png" href="/favicon.png">
+
+{# Stylesheets #}
+<link rel="stylesheet" href="{{site.theme.link}}/style.css" type="text/css"/>
+
+{# Mark support for JavaScript #}
 <script>document.documentElement.classList.remove('no-js');</script>
 
+{# Let WordPress add things to the <head> #}
 {{function('wp_head')}}
 

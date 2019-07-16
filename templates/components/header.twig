@@ -1,18 +1,27 @@
+{#
+	Header component
+	---------------- 
+ #}
 <header>
+
+	{# 
+		Allows users to jump to the content. 
+		Make sure you have an element with id='main' on your page.
+	#}
 	<a class='skip-to-content' href='#main'>
 		{{__("Skip to content", "lathe")}}
 	</a>
 
-	<h1>
-		<a href='{{site.link}}'>{{ site.name }}</a>
-	</h1>
+	<a href='{{site.link}}'>{{site.name}}</a>
+
 	<nav>
 		{% 
 			include "components/menu.twig" with {
-				'menu': menu.get_items
+				menu: menu.get_items
 			}
 		%}
 	</nav>
 
 	{% include "components/searchbox.twig" %}
+
 </header>

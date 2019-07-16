@@ -13,16 +13,6 @@ if (!class_exists('Timber')) {
 }
 
 /*
-	"Coming Soon" page for non-logged-in users.
-	You can comment this out when you're ready.
- */
-if (!is_user_logged_in() && !is_admin()) {
-	add_filter('template_include', function($template) {
-		return get_stylesheet_directory() . '/coming-soon.php';
-	});
-}
-
-/*
 	Where to look for Twig templates.
  */
 Timber::$dirname = array('templates');
@@ -48,6 +38,8 @@ class LatheSite extends Timber\Site {
 			register_nav_menus($menus);
 		});
 
+		$this->setup_site_settings();
+
 		add_filter('timber_context', function($context) use ($menus) {
 			// Pagination
 			$context['pagination'] = Timber::get_pagination();
@@ -57,6 +49,12 @@ class LatheSite extends Timber\Site {
 
 			// All menus
 			$context['menus'] = [];
+
+			// Site Settings
+			if (function_exists('get_fields')) {
+				$context['options'] = get_fields('option');
+			}
+
 			foreach(array_keys($menus) as $key) {
 				$context['menus'][$key] = new Timber\Menu($key);
 			}
@@ -131,6 +129,22 @@ class LatheSite extends Timber\Site {
 		add_filter('document_title_separator', function($sep) {
 			return '·';
 		});
+	}
+
+	function setup_site_settings() {
+		if(function_exists('acf_add_options_page')) {
+			acf_add_options_page(array(
+				'page_title' => __('Site Settings', 'lathe'),
+				'menu_title' => __('Site Settings', 'lathe'),
+				'menu_slug' => __('site-settings', 'lathe'),
+				'capability' => 'edit_posts',
+				'redirect' => false
+			));
+		}
+
+		if(function_exists('acf_add_local_field_group')) {
+			require_once 'field-groups/general.php';
+		}
 	}
 	
 }

@@ -12,6 +12,20 @@
 // The Timber Context to which we'll add things
 $context = Timber::context();
 
+/*
+	"Coming Soon" page for non-logged-in users.
+	You can comment this out when you're ready.
+*/
+
+if (
+	isset($context['options']) && 
+	$context['options']['is_coming_soon_enabled'] === true &&
+	!is_user_logged_in() && !is_admin()
+) {
+	$templates = array('coming-soon.twig');
+	return;
+}
+
 /* 
 	The $templates variable holds our Twig template hierarchy.
 	At the base we always have the index template,

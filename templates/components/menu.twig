@@ -1,18 +1,27 @@
+{#
+	Menu component
+	--------------
+
+	Properties:
+		- menu (Timber\Menu): the menu object to show
+		- nested (Boolean): whether to show menu items' children
+ #}
+
 {% if menu %}
-	<ul>
+<ul class='menu'>
 	{% for item in menu %}
-		<li class="menuitem {{ item.classes | join(' ') }}">
-			<a target="{{ item.target }}" href="{{ item.link }}" title="{{ item.title }}">
-				<span class='menuitem__label'>{{ item.title }}</span>
-			</a>
-			{% if nested %}
-			{% 
-				include "components/menu.twig" with {
-					'menu': item.get_children
-				}
-			%}
-			{% endif %}
-		</li>
+	<li class="menuitem {{item.classes | join(' ')}}">
+		<a target="{{item.target}}" href="{{item.link}}" title="{{item.title}}">
+			{{item.title}}
+		</a>
+		{% if nested %}
+		{% 
+			include "components/menu.twig" with {
+				menu: item.get_children
+			}
+		%}
+		{% endif %}
+	</li>
 	{% endfor %}
-	</ul>
+</ul>
 {% endif %}

@@ -1,39 +1,48 @@
+{#
+	Pagination component
+	--------------------
+
+	It reads the `pagination` property 
+	from the global Timber context.
+ #}
+
 {% if pagination.prev or pagination.next or pagination.pages | length %}
-<div class="pag pag--general">
-    {% if pagination.prev %}
-        <a 
-            href="{{pagination.prev.link}}" 
-            class="pag__item"
-        >
-            &larr; {{__("Previous", "lathe")}}
-        </a>
-    {% else %}
-        <span class='pag__item pag__item--inactive'>
-            &larr; {{__("Previous", "lathe")}}
-        </span>
-    {% endif %}
-    <ul class="pag__list">
-        {% for page in pagination.pages %}
-            <li>
-                {% if page.link %}
-                    <a href="{{page.link}}" class="pag__item {{page.class}}">{{page.title}}</a>
-                {% else %}
-                    <span class="pag__item pag__item--current {{page.class}}">{{page.title}}</span>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-    {% if pagination.next %}
-        <a 
-            href="{{pagination.next.link}}" 
-            class="pag__item"
-        >
-            {{__("Next", "lathe")}} &rarr;
-        </a>
-    {% else %}
-        <span class='pag__item pag__item--inactive'>
-            {{__("Next", "lathe")}} &rarr;
-        </span>
-    {% endif %}
+<div class="pag">
+
+	{% if pagination.prev %}
+	<a class="pag__item" href="{{pagination.prev.link}}">
+		{{__("Previous", "lathe")}}
+	</a>
+	{% else %}
+	<span class='pag__item pag__item--inactive'>
+		{{__("Previous", "lathe")}}
+	</span>
+	{% endif %}
+
+	<ul class="pag__list">
+		{% for page in pagination.pages %}
+		<li>
+			{% if page.link %}
+			<a  class="pag__item {{page.class}}" href="{{page.link}}">
+				{{page.title}}
+			</a>
+			{% else %}
+			<span class="pag__item pag__item--current {{page.class}}">
+				{{page.title}}
+			</span>
+			{% endif %}
+		</li>
+		{% endfor %}
+	</ul>
+
+	{% if pagination.next %}
+	<a class="pag__item" href="{{pagination.next.link}}">
+		{{__("Next", "lathe")}}
+	</a>
+	{% else %}
+	<span class='pag__item pag__item--inactive'>
+		{{__("Next", "lathe")}}
+	</span>
+	{% endif %}
 </div>
 {% endif %}
