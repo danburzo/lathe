@@ -1,4 +1,4 @@
 <?php
 
-include(get_template_directory() . '/context/_init.php');
+require_once get_template_directory() . '/context/__init__.php';
 Timber::render($templates, $context);

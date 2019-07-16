@@ -1,5 +1,10 @@
 <?php
-	
+
+/*
+	Context building for archive pages
+	----------------------------------
+ */
+
 $context['posts'] = new Timber\PostQuery();
 array_unshift($templates, 'archive/archive.twig');
 
