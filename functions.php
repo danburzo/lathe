@@ -38,7 +38,7 @@ class LatheSite extends Timber\Site {
 			register_nav_menus($menus);
 		});
 
-		$this->setup_site_settings();
+		add_action('acf/init', array($this, 'setup_acf'));
 
 		add_filter('timber_context', function($context) use ($menus) {
 			// Pagination
@@ -131,20 +131,24 @@ class LatheSite extends Timber\Site {
 		});
 	}
 
-	function setup_site_settings() {
-		if(function_exists('acf_add_options_page')) {
-			acf_add_options_page(array(
-				'page_title' => __('Site Settings', 'lathe'),
-				'menu_title' => __('Site Settings', 'lathe'),
-				'menu_slug' => __('site-settings', 'lathe'),
-				'capability' => 'edit_posts',
-				'redirect' => false
-			));
-		}
+	function setup_acf() {
+		
+		// add_filter('acf/settings/remove_wp_meta_box', '__return_false');
+		
+		/*
+			Create an Options Page
+		 */
+		acf_add_options_page(array(
+			'page_title' => __('Site Options', 'lathe'),
+			'menu_title' => __('Site Options', 'lathe'),
+			'menu_slug' => __('site-options', 'lathe'),
+			'capability' => 'edit_posts',
+			'redirect' => false
+		));
 
-		if(function_exists('acf_add_local_field_group')) {
-			require_once 'field-groups/general.php';
-		}
+		// Field groups
+		require_once 'field-groups/site-options.php';
+		require_once 'field-groups/redirect-to-url.php';
 	}
 	
 }

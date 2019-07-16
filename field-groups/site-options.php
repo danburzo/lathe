@@ -1,8 +1,12 @@
 <?php
 
+/*
+	ACF Group: Site Options
+	-----------------------
+ */
 acf_add_local_field_group(array(
 	'key' => 'group_5d2da02649c38',
-	'title' => __('Site Settings: General', 'lathe'),
+	'title' => __('Site Options: General', 'lathe'),
 	'fields' => array(
 		array(
 			'key' => 'field_5d2da033798ad',
@@ -29,7 +33,7 @@ acf_add_local_field_group(array(
 			array(
 				'param' => 'options_page',
 				'operator' => '==',
-				'value' => 'site-settings',
+				'value' => 'site-options',
 			),
 		),
 	),
