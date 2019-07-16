@@ -228,19 +228,22 @@ class LatheSite extends Timber\Site {
 		$twig->addFilter(new Twig_SimpleFilter(
 			'size',
 			function ($src, $size = '') {
-				if (isset(LatheSite::$image_sizes[$size])) {
-					$dest = LatheSite::$image_sizes[$size];
-					return Timber\ImageHelper::resize(
-						Timber\ImageHelper::img_to_jpg($src), 
-						isset($dest[0]) ? $dest[0] : NULL, 
-						isset($dest[1]) ? $dest[1] : NULL, 
-						isset($dest[2]) ? $dest[2] : NULL
-					);
-				} else {
-					// Don't resize the image 
-					// if we couldn't find the size.
+				/*
+					For SVG files, or for when the size was not found,
+					just return the original image.
+				 */
+				$is_svg = preg_match('/[^\?]+\.svg\b/i', $src);
+				if ($is_svg || !isset(LatheSite::$image_sizes[$size])) {
 					return $src;
 				}
+
+				$dest = LatheSite::$image_sizes[$size];
+				return Timber\ImageHelper::resize(
+					$src,
+					isset($dest[0]) ? $dest[0] : NULL, 
+					isset($dest[1]) ? $dest[1] : NULL, 
+					isset($dest[2]) ? $dest[2] : NULL
+				);
 			}
 		));
 
