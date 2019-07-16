@@ -2,7 +2,7 @@
 
 $context_base = get_template_directory() . '/context/';
 
-$context = Timber::get_context();
+$context = Timber::context();
 
 $templates = array('index.twig');
 
@@ -12,7 +12,7 @@ if (is_404()) {
 }
 
 if (is_search()) {
-	$context['posts'] = Timber::get_posts();
+	$context['posts'] = new Timber\PostQuery();
 	$templates = array('search.twig', 'archive.twig', 'index.twig');
 	return;
 }

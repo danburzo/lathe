@@ -22,7 +22,10 @@ if (!is_user_logged_in() && !is_admin()) {
 	});
 }
 
-Timber::$dirname = 'templates';
+/*
+	Where to look for Twig templates.
+ */
+Timber::$dirname = array('templates');
 
 class LatheSite extends Timber\Site {
 
@@ -31,7 +34,8 @@ class LatheSite extends Timber\Site {
 		add_action('after_setup_theme', array($this, 'configure_theme'));
 
 		/*
-			The theme defines custom menu locations
+			Custom menu locations
+			---------------------
 		*/
 		$menus = array(
 			'main-menu' => __('Main Menu', 'lathe'),
@@ -72,6 +76,9 @@ class LatheSite extends Timber\Site {
 	 */
 	function configure_theme() {
 
+		/*
+			Load translations
+		 */
 		load_theme_textdomain('lathe', get_template_directory() . '/languages');
 
 		/*
@@ -94,6 +101,11 @@ class LatheSite extends Timber\Site {
 			'gallery', 
 			'caption'
 		));
+
+		/*
+			Add support for responsive embedded content.
+		 */
+		add_theme_support('responsive-embeds');
 
 		/*
 			Add default posts and comments RSS feed links to head.

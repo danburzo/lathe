@@ -1,14 +1,6 @@
 <?php
 
-$p = new Timber\Post();
-$context['post'] = $p;
-
-if (function_exists('get_field')) {
-	$redirect_to = get_field('redirect_to', $p->ID);
-	if ($redirect_to) {
-		wp_redirect($redirect_to);
-	}
-}
+$context['post'] = new Timber\Post();
 
 /*
 	Context Building
@@ -21,7 +13,7 @@ if (is_page()) {
 
 } else if (is_single()) {
 	
-	$post_type_include = $context_base . 'single-' . $p->post_type . '.php';
+	$post_type_include = $context_base . 'single-' . $context['post']->post_type . '.php';
 	if (file_exists($post_type_include)) {
 		include($post_type_include);
 	}
@@ -43,16 +35,16 @@ if (is_page_template()) {
 if (is_page()) {
 	array_unshift(
 		$templates, 
-		'page-' . $p->post_name . '.twig', 
+		'page-' . $context['post']->post_name . '.twig', 
 		'page.twig'
 	);
 } else if (is_single()) {
 	array_unshift(
 		$templates,
-		$p->post_parent ? 
-			'single/single-' . $p->post_type . '-subpage.twig' :
-			'single/single-' . $p->post_type . '-root.twig',
-		'single/single-'. $p->post_type . '.twig',
+		$context['post']->post_parent ? 
+			'single/single-' . $context['post']->post_type . '-subpage.twig' :
+			'single/single-' . $context['post']->post_type . '-root.twig',
+		'single/single-'. $context['post']->post_type . '.twig',
 		'single/single.twig'
 	);
 
@@ -65,6 +57,6 @@ if (is_page()) {
 
 	array_unshift(
 		$templates, 
-		'single/single-' . $p->ID . '.twig'
+		'single/single-' . $context['post']->ID . '.twig'
 	);
 }
