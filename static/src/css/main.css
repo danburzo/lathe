@@ -1,0 +1,6 @@
+/* Import main stylesheet */
+@import '../../../style.css';
+
+:root {
+	font-family: sans-serif;
+}

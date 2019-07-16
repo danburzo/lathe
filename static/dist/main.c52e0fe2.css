@@ -29,4 +29,8 @@ header {
 
 article img {
 	max-width: 100%;
+}/* Import main stylesheet */
+
+:root {
+	font-family: sans-serif;
 }

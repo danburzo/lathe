@@ -19,6 +19,10 @@ Timber::$dirname = array('templates');
 
 class LatheSite extends Timber\Site {
 
+	static $manifest_path = 'parcel-manifest.json';
+	static $assets_path = '/static/dist/';
+	static $__manifest__;
+
 	function __construct() {
 
 		add_action('after_setup_theme', array($this, 'configure_theme'));
@@ -40,7 +44,7 @@ class LatheSite extends Timber\Site {
 
 		add_action('acf/init', array($this, 'setup_acf'));
 
-		add_filter('timber_context', function($context) use ($menus) {
+		add_filter('timber/context', function($context) use ($menus) {
 			// Pagination
 			$context['pagination'] = Timber::get_pagination();
 
@@ -61,6 +65,10 @@ class LatheSite extends Timber\Site {
 
 			return $context;
 		});
+
+		add_filter('timber/twig', array($this, 'configure_twig'));
+
+		$this->load_assets_manifest();
 		
 		parent::__construct();
 	}
@@ -149,6 +157,52 @@ class LatheSite extends Timber\Site {
 		// Field groups
 		require_once 'field-groups/site-options.php';
 		require_once 'field-groups/redirect-to-url.php';
+	}
+
+
+	function asset_path($path) {
+		return get_template_directory_uri() . LatheSite::$assets_path . $path;
+	}
+
+	/*
+		Load the asset manifest file generated 
+		from the front-end build process.
+	 */
+	function load_assets_manifest() {
+		if (is_null(LatheSite::$__manifest__)) {
+			$manifest_path = get_template_directory() . 
+				LatheSite::$assets_path . 
+				LatheSite::$manifest_path;
+
+			if (file_exists($manifest_path)) {
+				LatheSite::$__manifest__ = json_decode(
+					file_get_contents($manifest_path), TRUE
+				);
+			}
+		}
+	}
+
+	function configure_twig($twig) {
+
+		$twig->addFunction(
+			new Timber\Twig_Function('script', function ($handle) {
+				wp_enqueue_script(
+					$handle, 
+					$this->asset_path(LatheSite::$__manifest__[$handle])
+				);
+			})
+		);
+
+		$twig->addFunction(
+			new Timber\Twig_Function('style', function ($handle) {
+				wp_enqueue_style(
+					$handle, 
+					$this->asset_path(LatheSite::$__manifest__[$handle])
+				);
+			})
+		);
+
+		return $twig;
 	}
 	
 }

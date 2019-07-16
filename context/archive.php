@@ -20,8 +20,8 @@ if (is_day()) {
 	array_unshift($templates, 'archive/archive-' . get_query_var('cat') . '.twig');
 } else if (is_post_type_archive()) {
 	$p_type = get_post_type();
-	array_unshift($templates, 'archive/archive-' . $p_type . '.twig');
-	$post_type_include = $context_base . 'archive-' . $p_type . '.php';
+	array_unshift($templates, "archive/archive-${$p_type}.twig");
+	$post_type_include = context_path("archive-{$p_type}.php");
 	if (file_exists($post_type_include)) {
 		include($post_type_include);
 	}
