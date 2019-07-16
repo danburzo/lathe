@@ -184,27 +184,34 @@ class LatheSite extends Timber\Site {
 
 	function configure_twig($twig) {
 
-		$twig->addFunction(
-			new Timber\Twig_Function('script', function ($handle) {
+		$twig->addFunction(new Timber\Twig_Function(
+			'script', 
+			function($handle, $enqueue = true) {
+				if (!$enqueue) {
+					return $this->asset_path(LatheSite::$__manifest__[$handle]);
+				}
 				wp_enqueue_script(
 					$handle, 
 					$this->asset_path(LatheSite::$__manifest__[$handle])
 				);
-			})
-		);
+			}
+		));
 
-		$twig->addFunction(
-			new Timber\Twig_Function('style', function ($handle) {
+		$twig->addFunction(new Timber\Twig_Function(
+			'style', 
+			function($handle, $enqueue = true) {
+				if (!$enqueue) {
+					return $this->asset_path(LatheSite::$__manifest__[$handle]);
+				}
 				wp_enqueue_style(
 					$handle, 
 					$this->asset_path(LatheSite::$__manifest__[$handle])
 				);
-			})
-		);
+			}
+		));
 
 		return $twig;
 	}
-	
 }
 
 new LatheSite();
