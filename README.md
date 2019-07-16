@@ -13,13 +13,17 @@ Here's what you get out of the box:
 
 ## Guides
 
+### Getting started
+
+The Lathe theme is designed to be cloned and modified to your liking. You can start a GitHub repository [based on this theme](https://github.com/forklor/lathe/generate) or [download it as a ZIP](https://github.com/forklor/lathe/archive/master.zip).
+
+When you add this theme to your WordPress installation, you'll need to also install the Timber and ACF plugins.
+
+Keep the [Timber docs](https://timber.github.io/docs/) handy for reference as you change the theme.
+
 ### Static resource bundling
 
-This theme is set up to process CSS, JavaScript, and other static resources with [Parcel](https://parceljs.org/).
-
-#### Setting up
-
-You'll need to have Node and Yarn installed to use static resource bundling. Run `yarn` in your theme folder to install all the dependencies.
+This theme is set up to process CSS, JavaScript, and other static resources with [Parcel](https://parceljs.org/). You'll need to have Node and Yarn installed to use static resource bundling. Run `yarn` in your theme folder to install all the dependencies.
 
 #### npm scripts
 
@@ -28,11 +32,11 @@ There are a couple of scripts available:
 -   `yarn start` — builds the resources as you work on them, reacting to changes
 -   `yarn build` — builds the resources for production
 
-> The bundles are generated in the `static/dist` folder. Make sure you don't change these files by hand, as your changes will be overwritten!
+> The bundles are _automatically_ generated in the `static/dist` folder, so if you change these files by hand, they risk being overwritten!
 
 #### Assets Manifest
 
-The set of files to process is defined in the `assets-manifest.html` file. Here's an example:
+The set of files to process is defined in the `assets-manifest.html` file, located in the theme's root folder. Here's an example:
 
 **asset-manifest.html**
 
@@ -41,7 +45,7 @@ The set of files to process is defined in the `assets-manifest.html` file. Here'
 <link href="style.css" rel="stylesheet" />
 ```
 
-You add CSS files you want to process as `<link>` elements, and JavaScript as `<script>` elements. Then, in your theme code, you can use the `style()` and `script()` Twig functions to include these assets on the pages that need them.
+You add CSS files you want to process as `<link>` elements, and JavaScript as `<script>` elements. Then, in your theme code, you can use the [`style()`](#the-style-function) and [`script()`](#the-script-function) Twig functions to include these assets on the pages that need them.
 
 For the two assets included in our example manifest, the equivalent Twig code to include them is:
 
@@ -56,7 +60,7 @@ We don't refer to the assets by the bundle path. If you take a look in `static/d
 
 Instead, we refer to their path _relative to the root folder_ of your theme. The `$handle` parameter always matches the `src` / `href` attributes we use in our Asset Manifest.
 
-> Sidenote: Why this weird system? To my mind, it's currently [the easiest way](https://github.com/parcel-bundler/parcel/issues/2611) to pair Parcel with a WordPress theme.
+> **Hmm.** You may wonder about this weird setup. To my mind, it's currently [the easiest way](https://github.com/parcel-bundler/parcel/issues/2611) to pair Parcel with a WordPress theme. It may change in a future version, if a better approach emerges.
 
 ## Reference
 
@@ -90,4 +94,31 @@ Works the same way as `style()`, but for scripts.
 
 ### Twig filters
 
-TBD.
+#### The `size` filter
+
+Timber already has a lot of flexibility in [dealing with images](https://timber.github.io/docs/guides/cookbook-images/). This theme adds the `size` filter, allowing you resize images from a set of predefined sizes.
+
+Usage:
+
+```twig
+{% if post.thumbnail %}
+	<img src='{{ Image(post.thumbnail).src | size("thumbnail") }}'/>
+{% endif %}
+```
+
+The `static $image_sizes` definition in `function.php` lets you configure the predefined sizes.
+
+> _Note_: These are different from the Media sizes you can configure from the WordPress admin UI.
+
+## Related projects
+
+This theme is inspired by Timber's own [starter theme](https://github.com/timber/starter-theme).
+
+## Contributing
+
+Two things:
+
+-   The project is in early development;
+-   This is all the PHP I know.
+
+As such, I appreciate any sort of feedback and help.

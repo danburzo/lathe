@@ -21,6 +21,15 @@ class LatheSite extends Timber\Site {
 
 	static $manifest_path = 'parcel-manifest.json';
 	static $assets_path = '/static/dist/';
+
+	/*
+		The set of image sizes used for the `size()` Twig filter.
+	 */
+	static $image_sizes = array(
+		'thumbnail' => [800, 600],
+		'full' => [1920, 1280, 'center']
+	);
+
 	static $__manifest__;
 
 	function __construct() {
@@ -184,6 +193,10 @@ class LatheSite extends Timber\Site {
 
 	function configure_twig($twig) {
 
+		/*
+			Twig Functions
+			--------------
+		 */
 		$twig->addFunction(new Timber\Twig_Function(
 			'script', 
 			function($handle, $enqueue = true) {
@@ -207,6 +220,32 @@ class LatheSite extends Timber\Site {
 					$handle, 
 					$this->asset_path(LatheSite::$__manifest__[$handle])
 				);
+			}
+		));
+
+		/*
+			Twig Filters
+			------------
+			TODO: This will need to be changed 
+			to the `Timber\Twig_Filter` class soon.
+		 */
+		
+		$twig->addFilter(new Twig_SimpleFilter(
+			'size',
+			function ($src, $size = '') {
+				if (isset(LatheSite::$image_sizes[$size])) {
+					$dest = LatheSite::$image_sizes[$size];
+					return Timber\ImageHelper::resize(
+						Timber\ImageHelper::img_to_jpg($src), 
+						isset($dest[0]) ? $dest[0] : NULL, 
+						isset($dest[1]) ? $dest[1] : NULL, 
+						isset($dest[2]) ? $dest[2] : NULL
+					);
+				} else {
+					// Don't resize the image 
+					// if we couldn't find the size.
+					return $src;
+				}
 			}
 		));
 
