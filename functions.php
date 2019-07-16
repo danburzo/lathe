@@ -57,19 +57,16 @@ class LatheSite extends Timber\Site {
 			// Pagination
 			$context['pagination'] = Timber::get_pagination();
 
-			// Main menu
-			$context['menu'] = new Timber\Menu('main-menu');
-
 			// All menus
 			$context['menus'] = [];
+			foreach(array_keys($menus) as $key) {
+				$context['menus'][$key] = new Timber\Menu($key);
+			}
+			$context['menu'] = $context['menus']['main-menu'];
 
 			// Site Settings
 			if (function_exists('get_fields')) {
 				$context['options'] = get_fields('option');
-			}
-
-			foreach(array_keys($menus) as $key) {
-				$context['menus'][$key] = new Timber\Menu($key);
 			}
 
 			return $context;
@@ -150,11 +147,12 @@ class LatheSite extends Timber\Site {
 
 	function setup_acf() {
 		
-		// add_filter('acf/settings/remove_wp_meta_box', '__return_false');
+		/* Allow ACF fields and field groups to be translated */
+		add_filter('acf/settings/l10n_textdomain', function() {
+			return 'lathe';
+		});
 		
-		/*
-			Create an Options Page
-		 */
+		/* Create an Options Page */
 		acf_add_options_page(array(
 			'page_title' => __('Site Options', 'lathe'),
 			'menu_title' => __('Site Options', 'lathe'),
@@ -163,9 +161,6 @@ class LatheSite extends Timber\Site {
 			'redirect' => false
 		));
 
-		// Field groups
-		require_once 'field-groups/site-options.php';
-		require_once 'field-groups/redirect-to-url.php';
 	}
 
 

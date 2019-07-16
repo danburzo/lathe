@@ -1,0 +1,40 @@
+{
+	"key": "group_5d2e2dfc369ab",
+	"title": "Redirect to URL",
+	"fields": [
+		{
+			"key": "field_5d2e2e05ecef1",
+			"label": "URL",
+			"name": "redirect_to_url",
+			"type": "url",
+			"instructions": "",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": ""
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "page_template",
+				"operator": "==",
+				"value": "page-templates/template-redirect-to-url.php"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "side",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"hide_on_screen": "",
+	"active": 1,
+	"description": "",
+	"modified": 1563307556
+}
