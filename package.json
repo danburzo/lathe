@@ -6,7 +6,7 @@
 	"author": "Dan Burzo <danburzo@gmail.com>",
 	"license": "MIT",
 	"devDependencies": {
-		"husky": "^3.0.0",
+		"husky": "^2.7.0",
 		"parcel-bundler": "^1.12.3",
 		"parcel-plugin-bundle-manifest": "^0.2.0",
 		"prettier": "1.18.2",
@@ -19,7 +19,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "yarn pretty-quick --staged"
+			"pre-commit": "pretty-quick --staged"
 		}
 	},
 	"prettier": {
