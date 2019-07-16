@@ -10,8 +10,8 @@
     "parcel-plugin-bundle-manifest": "^0.2.0"
   },
   "scripts": {
-    "watch": "parcel watch -d static/dist --public-url . --no-source-maps static/src/manifest.html",
-    "prebuild": "rm -rf static/dist",
-    "build": "parcel build -d static/dist --public-url . --no-source-maps static/src/manifest.html"
+    "watch": "parcel watch -d static/dist --public-url . --no-source-maps assets-manifest.html",
+    "build": "parcel build -d static/dist --public-url . --no-source-maps assets-manifest.html",
+    "prebuild": "rm -rf static/dist"
   }
 }
