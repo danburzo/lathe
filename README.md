@@ -119,7 +119,7 @@ A helper function to reference bundled assets in your theme. See [Static assets 
 
 ### Twig filters
 
-### The `asset` filter
+#### The `asset` filter
 
 You can call the [`asset()`](#the-asset-function) function as a filter, too. These are equivalent:
 
