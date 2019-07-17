@@ -57,6 +57,15 @@ class LatheSite extends Timber\Site {
 			}
 		});
 
+		/* 
+			Fixes issue with nesting in the Menu editor
+			Reference: https://core.trac.wordpress.org/ticket/18282
+		*/
+		add_filter('nav_menu_meta_box_object', function($obj) {
+			$obj->_default_query = array('posts_per_page' => -1);
+			return $obj;
+		}, 9);
+
 		/*
 			Custom menu locations
 			---------------------
