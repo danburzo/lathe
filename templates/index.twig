@@ -1,13 +1,24 @@
 {% extends "base.twig" %}
 
 {% block content %}
-	{% for post in posts %}
+	{% if posts | length %} 
+		{% for post in posts %}
+			{% 
+				include [
+					'tease/tease-' ~ post.post_type ~ '.twig', 
+					'tease/tease.twig'
+				] 
+			%}
+		{% endfor %}
+
 		{% 
-			include [
-				'tease/tease-' ~ post.post_type ~ '.twig', 
-				'tease/tease.twig'
-			] 
+			include 'components/pagination.twig' with {
+				pagination: posts.pagination
+			} 
 		%}
-	{% endfor %}
-	{% include 'components/pagination.twig' %}
+	{% else %}
+		{% block no_content %}
+			{{__("No articles", "lathe") }}
+		{% endblock %}
+	{% endif %}
 {% endblock %}

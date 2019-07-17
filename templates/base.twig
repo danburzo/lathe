@@ -18,10 +18,6 @@
 		{% endblock %}
 
 		<main id='main'>
-			{% if title %}
-				<h1 class='archive__title'>{{ title }}</h1>
-			{% endif %}
-
 			{% block content %}
 				{{__("Sorry, no content", "lathe")}}
 			{% endblock %}

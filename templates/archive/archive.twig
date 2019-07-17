@@ -1,34 +1,15 @@
 {# 
 	Archive template
-	----------------	
+	----------------
+
+	Overrides the index page content by adding
+	the archive title, followed by the original content
+	Reference: https://twig.symfony.com/doc/2.x/functions/parent.html
  #}
 
-{% extends "base.twig" %}
+{% extends "index.twig" %}
 
 {% block content %}
-	
-	{% if posts | length %} 
-
-		{% for row in posts | batch(3) %}
-		<div class='row row--spaced'>
-			{% for post in row %}
-			<div class='col-md-4'>
-				{% 
-					include [
-						'tease/tease-' ~ post.post_type ~ '.twig', 
-						'tease/tease-post.twig',
-						'tease/tease.twig'
-					] 
-				%}
-			</div>
-			{% endfor %}
-		</div>
-		{% endfor %}
-
-		{% include 'components/pagination.twig' %}
-	{% else %}
-		{% block no_content %}
-			{{__("No articles", "lathe") }}
-		{% endblock %}
-	{% endif %}
+	<h1>{{ title }}</h1>
+	{{ parent() }}
 {% endblock %}

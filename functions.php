@@ -37,6 +37,27 @@ class LatheSite extends Timber\Site {
 		add_action('after_setup_theme', array($this, 'configure_theme'));
 
 		/*
+			Customize the WP Query object.
+
+			This only applies to the main query on the page,
+			and only on the user-facing website.
+		 */
+		add_action('pre_get_posts', function($query) {
+			if (is_admin() || !$query->is_main_query()) {
+				return;
+			}
+
+			/*
+				For post type archives, ony show the top-level posts.
+			 */
+			if ($query->is_post_type_archive()) {
+				if ($query->query_vars['post_parent'] == false) {
+					$query->set('post_parent', 0);
+				}
+			}
+		});
+
+		/*
 			Custom menu locations
 			---------------------
 		*/
@@ -54,9 +75,6 @@ class LatheSite extends Timber\Site {
 		add_action('acf/init', array($this, 'setup_acf'));
 
 		add_filter('timber/context', function($context) use ($menus) {
-			// Pagination
-			$context['pagination'] = Timber::get_pagination();
-
 			// All menus
 			$context['menus'] = [];
 			foreach(array_keys($menus) as $key) {

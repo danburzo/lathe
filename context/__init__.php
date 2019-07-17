@@ -46,12 +46,6 @@ if (is_404()) {
 	return;
 }
 
-if (is_search()) {
-	$context['posts'] = new Timber\PostQuery();
-	$templates = array('search.twig', 'archive.twig', 'index.twig');
-	return;
-}
-
 if (is_home()) {
 	array_unshift($templates, 'home.twig');
 }
@@ -61,8 +55,9 @@ if (is_home()) {
 	The context definition for these basic types are 
 	split into their own files.
  */
+
 if (is_singular()) {
-	require_once context_path('singular.php');
+	include_once context_path('singular.php');
 } else {
-	require_once context_path('archive.php');
+	include_once context_path('archive.php');
 }
