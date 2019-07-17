@@ -1,6 +1,6 @@
 {
 	"name": "lathe",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"main": "index.js",
 	"repository": "git@github.com:forklor/lathe.git",
 	"author": "Dan Burzo <danburzo@gmail.com>",
@@ -14,7 +14,7 @@
 		"pretty-quick": "^1.11.1"
 	},
 	"scripts": {
-		"watch": "parcel watch -d static/dist --public-url . --no-source-maps assets-manifest.html",
+		"start": "parcel watch -d static/dist --public-url . --no-source-maps assets-manifest.html",
 		"build": "parcel build -d static/dist --public-url . --no-source-maps assets-manifest.html",
 		"prebuild": "rm -rf static/dist"
 	},

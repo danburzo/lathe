@@ -11,6 +11,17 @@ Here's what you get out of the box:
 -   **A pipeline for processing static assets.** This unlocks a lot of flexibility to work with whichever flavor of CSS or JavaScript you want.
 -   **Useful pre-made things.** Lathe includes some Twig functions, filters, and components which you can hack to your liking.
 
+## Table of contents
+
+-   [Guides](#guides)
+    -   [Getting started](#getting-started)
+    -   [Static assets bundling](#static-assets-bundling)
+-   [Reference](#reference)
+    -   [Twig functions](#twig-functions)
+    -   [Twig filters](#twig-filters)
+-   [Related projects](#related-projects)
+-   [Contributing](#contributing)
+
 ## Guides
 
 ### Getting started
@@ -21,18 +32,18 @@ When you add this theme to your WordPress installation, you'll need to also inst
 
 Keep the [Timber docs](https://timber.github.io/docs/) handy for reference as you change the theme.
 
-### Static resource bundling
+### Static assets bundling
 
-This theme is set up to process CSS, JavaScript, and other static resources with [Parcel](https://parceljs.org/). You'll need to have Node and Yarn installed to use static resource bundling. Run `yarn` in your theme folder to install all the dependencies.
+This theme is set up to process CSS, JavaScript, and other static assets with [Parcel](https://parceljs.org/). You'll need to have Node and Yarn installed to use static assets bundling. Run `yarn` in your theme folder to install all the dependencies.
 
 #### npm scripts
 
 There are a couple of scripts available:
 
--   `yarn start` — builds the resources as you work on them, reacting to changes
--   `yarn build` — builds the resources for production
+-   `yarn start` — builds the assets in development mode and watches for changes
+-   `yarn build` — builds the assets for production
 
-> The bundles are _automatically_ generated in the `static/dist` folder, so if you change these files by hand, they risk being overwritten!
+> The bundles are _automatically_ generated in the `static/dist` folder. If you change these files by hand, they risk being overwritten!
 
 #### Assets Manifest
 
@@ -45,54 +56,80 @@ The set of files to process is defined in the `assets-manifest.html` file, locat
 <link href="style.css" rel="stylesheet" />
 ```
 
-You add CSS files you want to process as `<link>` elements, and JavaScript as `<script>` elements. Then, in your theme code, you can use the [`style()`](#the-style-function) and [`script()`](#the-script-function) Twig functions to include these assets on the pages that need them.
+These assets are called _entry points_. You will be able to reference them in your theme's code.
 
-For the two assets included in our example manifest, the equivalent Twig code to include them is:
+You add entry points as you would in a normal HTML file:
+
+-   CSS files as `<link rel='stylesheet'>` elements
+-   JavaScript as `<script>` elements
+-   Images as `<img>` elements
+-   ...and so on
+
+> This setup needs some getting used to, but to my mind it's currently [the easiest way](https://github.com/parcel-bundler/parcel/issues/2611) to pair Parcel with a WordPress theme. It may change in a future version, if a better approach emerges.
+
+In your theme code, you can use the [`asset()`](#the-style-function) Twig function to include these assets on the pages that need them. For the two assets included in our example manifest, the equivalent Twig code to include them is:
 
 **templates/my-template.twig**
 
 ```twig
-{{ script('static/index.js') }}
-{{ style('style.css') }}
+{{ asset('static/index.js', true) }}
+{{ asset('style.css', true) }}
 ```
 
-We don't refer to the assets by the bundle path. If you take a look in `static/dist`after a build, you may notice the paths contain _hashes_ — sequences of alphanumeric characters that help deal with the browser cache. A file's hash updates whenever you make a change to the file, so if we were to refer to it as such, we'd constantly have to tweak our theme code.
+When the page gets rendered, you'll see:
 
-Instead, we refer to their path _relative to the root folder_ of your theme. The `$handle` parameter always matches the `src` / `href` attributes we use in our Asset Manifest.
+```html
+<link
+	rel="stylesheet"
+	id="style.css-css"
+	type="text/css"
+	media="all"
+	href="http://example.com/wp-content/themes/lathe/static/dist/style.281d1dd0.css?ver=5.2.2"
+/>
 
-> **Hmm.** You may wonder about this weird setup. To my mind, it's currently [the easiest way](https://github.com/parcel-bundler/parcel/issues/2611) to pair Parcel with a WordPress theme. It may change in a future version, if a better approach emerges.
+<script
+	type="text/javascript"
+	src="http://example.com/wp-content/themes/lathe/static/dist/static.117076fb.js?ver=5.2.2"
+></script>
+```
+
+> The paths to the bundled assets contain _hashes_ — sequences of alphanumeric characters that help deal with the browser cache. A file's hash updates whenever you make a change to the file.
 
 ## Reference
 
 ### Twig functions
 
-#### The `style()` function
+#### The `asset()` function
 
-A helper function to reference stylesheets in your theme.
+A helper function to reference bundled assets in your theme. See [Static assets bundling](#static-assets-bundling) for more details.
 
 ```twig
-{{ style($handle, $enqueue = true) }}
+{{ asset($handle, $enqueue = false) }}
 ```
 
 **Options:**
 
--   `$handle`: the identifier for the stylesheet, as referenced in the [Assets Manifest](#assets-manifest);
--   `$enqueue`: when `true`, it enqueues the stylesheet through WordPress; when `false`, it returns an absolute URL to the stylesheet.
+**`$handle`:** The identifier for the asset, which is the path you referenced in your [Assets Manifest](#assets-manifest). This will normally be the path to the asset relative to the root of your theme.
 
-#### The `script()` function
+**`$enqueue`** defines how the asset should be included:
 
-Works the same way as `style()`, but for scripts.
-
-```twig
-{{ script($handle, $enqueue = true) }}
-```
-
-**Options:**
-
--   `$handle`: the identifier for the script, as referenced in the [Assets Manifest](#assets-manifest);
--   `$enqueue`: when `true`, it enqueues the script through WordPress; when `false`, it returns an absolute URL to the script.
+-   when `true`, it enqueues the asset through WordPress's `wp_enqueue_script` or `wp_enqueue_style` (only CSS and JavaScript files support this mode).
+-   when `false`, it returns an absolute URL to the asset;
+-   when `"inline"`, it writes the asset inline.
 
 ### Twig filters
+
+### The `asset` filter
+
+You can call the [`asset()`](#the-asset-function) function as a filter, too. These are equivalent:
+
+```twig
+{# As a function... #}
+{{ asset('style.css', true) }}
+
+{# ...or as a filter #}
+{{ 'style.css' | asset(true) }}
+```
 
 #### The `size` filter
 

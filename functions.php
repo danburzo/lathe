@@ -163,11 +163,6 @@ class LatheSite extends Timber\Site {
 
 	}
 
-
-	function asset_path($path) {
-		return get_template_directory_uri() . LatheSite::$assets_path . $path;
-	}
-
 	/*
 		Load the asset manifest file generated 
 		from the front-end build process.
@@ -192,63 +187,79 @@ class LatheSite extends Timber\Site {
 			Twig Functions
 			--------------
 		 */
-		$twig->addFunction(new Timber\Twig_Function(
-			'script', 
-			function($handle, $enqueue = true) {
-				if (!$enqueue) {
-					return $this->asset_path(LatheSite::$__manifest__[$handle]);
-				}
-				wp_enqueue_script(
-					$handle, 
-					$this->asset_path(LatheSite::$__manifest__[$handle])
-				);
-			}
-		));
-
-		$twig->addFunction(new Timber\Twig_Function(
-			'style', 
-			function($handle, $enqueue = true) {
-				if (!$enqueue) {
-					return $this->asset_path(LatheSite::$__manifest__[$handle]);
-				}
-				wp_enqueue_style(
-					$handle, 
-					$this->asset_path(LatheSite::$__manifest__[$handle])
-				);
-			}
-		));
+		$twig->addFunction(
+			new Timber\Twig_Function('asset', array($this, 'asset'))
+		);
 
 		/*
 			Twig Filters
 			------------
-			TODO: This will need to be changed 
-			to the `Timber\Twig_Filter` class soon.
 		 */
 		
-		$twig->addFilter(new Twig_SimpleFilter(
-			'size',
-			function ($src, $size = '') {
-				/*
-					For SVG files, or for when the size was not found,
-					just return the original image.
-				 */
-				$is_svg = preg_match('/[^\?]+\.svg\b/i', $src);
-				if ($is_svg || !isset(LatheSite::$image_sizes[$size])) {
-					return $src;
-				}
-
-				$dest = LatheSite::$image_sizes[$size];
-				return Timber\ImageHelper::resize(
-					$src,
-					isset($dest[0]) ? $dest[0] : NULL, 
-					isset($dest[1]) ? $dest[1] : NULL, 
-					isset($dest[2]) ? $dest[2] : NULL
-				);
-			}
-		));
+		// TODO: This will need to be changed to the 
+		// `Timber\Twig_Filter` class soon.
+		$twig->addFilter(
+			new Twig_SimpleFilter('size', array($this, 'size'))
+		);
+		
+		$twig->addFilter(
+			new Twig_SimpleFilter('asset', array($this, 'asset'))
+		);
 
 		return $twig;
 	}
+
+	function _asset_uri($path) {
+		return get_template_directory_uri() . LatheSite::$assets_path . $path;
+	}
+
+	function asset($handle, $enqueue = false) {
+		if (!isset(LatheSite::$__manifest__[$handle])) {
+			trigger_error("{$handle} is not defined as an asset", E_USER_WARNING);
+			return;
+		}
+		$src = LatheSite::$__manifest__[$handle];
+		$uri = $this->_asset_uri($src);
+		if ($enqueue === false) {
+			return $uri;
+		}
+		if ($enqueue === true) {
+			if (preg_match('/\.js$/i', $uri)) {
+				wp_enqueue_script($handle, $uri);
+			} else if (preg_match('/\.css$/i', $uri)) {
+				wp_enqueue_style($handle, $uri);
+			} else {
+				trigger_error("Can't enqueue {$handle}", E_USER_WARNING);
+			}
+			return;
+		}
+		if ($enqueue === 'inline') {
+			return file_get_contents(
+				get_template_directory() . LatheSite::$assets_path . $src
+			);
+		}
+
+		trigger_error("Undefined mode {$enqueue}", E_USER_WARNING);
+	}
+
+	function size($src, $size = '') {
+		/*
+			For SVG files, or for when the size was not found,
+			just return the original image.
+		 */
+		$is_svg = preg_match('/[^\?]+\.svg\b/i', $src);
+		if ($is_svg || !isset(LatheSite::$image_sizes[$size])) {
+			return $src;
+		}
+
+		$dest = LatheSite::$image_sizes[$size];
+		return Timber\ImageHelper::resize(
+			$src,
+			isset($dest[0]) ? $dest[0] : NULL, 
+			isset($dest[1]) ? $dest[1] : NULL, 
+			isset($dest[2]) ? $dest[2] : NULL
+		);
+	}
 }
 
-new LatheSite();
+$site = new LatheSite();
