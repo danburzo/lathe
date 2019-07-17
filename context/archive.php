@@ -5,7 +5,6 @@
 	----------------------------------
  */
 
-$context['posts'] = new Timber\PostQuery();
 array_unshift($templates, 'archive/archive.twig');
 
 if (is_day()) {
@@ -26,3 +25,5 @@ if (is_day()) {
 		include($post_type_include);
 	}
 }
+
+$context['posts'] = new Timber\PostQuery();

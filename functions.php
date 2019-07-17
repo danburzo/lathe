@@ -168,13 +168,13 @@ class LatheSite extends Timber\Site {
 		from the front-end build process.
 	 */
 	function load_assets_manifest() {
-		if (is_null(LatheSite::$__manifest__)) {
+		if (is_null(self::$__manifest__)) {
 			$manifest_path = get_template_directory() . 
-				LatheSite::$assets_path . 
-				LatheSite::$manifest_path;
+				self::$assets_path . 
+				self::$manifest_path;
 
 			if (file_exists($manifest_path)) {
-				LatheSite::$__manifest__ = json_decode(
+				self::$__manifest__ = json_decode(
 					file_get_contents($manifest_path), TRUE
 				);
 			}
@@ -210,15 +210,15 @@ class LatheSite extends Timber\Site {
 	}
 
 	function _asset_uri($path) {
-		return get_template_directory_uri() . LatheSite::$assets_path . $path;
+		return get_template_directory_uri() . self::$assets_path . $path;
 	}
 
 	function asset($handle, $enqueue = false) {
-		if (!isset(LatheSite::$__manifest__[$handle])) {
+		if (!isset(self::$__manifest__[$handle])) {
 			trigger_error("{$handle} is not defined as an asset", E_USER_WARNING);
 			return;
 		}
-		$src = LatheSite::$__manifest__[$handle];
+		$src = self::$__manifest__[$handle];
 		$uri = $this->_asset_uri($src);
 		if ($enqueue === false) {
 			return $uri;
@@ -235,7 +235,7 @@ class LatheSite extends Timber\Site {
 		}
 		if ($enqueue === 'inline') {
 			return file_get_contents(
-				get_template_directory() . LatheSite::$assets_path . $src
+				get_template_directory() . self::$assets_path . $src
 			);
 		}
 
@@ -248,11 +248,11 @@ class LatheSite extends Timber\Site {
 			just return the original image.
 		 */
 		$is_svg = preg_match('/[^\?]+\.svg\b/i', $src);
-		if ($is_svg || !isset(LatheSite::$image_sizes[$size])) {
+		if ($is_svg || !isset(self::$image_sizes[$size])) {
 			return $src;
 		}
 
-		$dest = LatheSite::$image_sizes[$size];
+		$dest = self::$image_sizes[$size];
 		return Timber\ImageHelper::resize(
 			$src,
 			isset($dest[0]) ? $dest[0] : NULL, 
