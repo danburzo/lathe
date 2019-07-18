@@ -19,7 +19,15 @@ use Timber\ImageHelper;
 Timber::$dirname = array('templates');
 
 /* Twig template cache */
-Timber::$cache = true;
+Timber::$cache = defined(WP_DEBUG) ? WP_DEBUG : false;
+Routes::map('maintenance/clear-twig-cache', function() {
+	if (is_user_logged_in()) {
+		$loader = new Timber\Loader();
+		$loader->clear_cache_twig();
+		echo 'Twig cache cleared.';
+		exit(0);
+	}
+});
 
 class LatheSite extends Site {
 
