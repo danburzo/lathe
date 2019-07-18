@@ -2,31 +2,31 @@
 
 if (!class_exists('Timber')) {
 	add_action('admin_notices', function() {
-		echo '<div class="error"><p>Timber not activated. Make sure you activate the plugin in <a href="' . esc_url( admin_url( 'plugins.php#timber' ) ) . '">' . esc_url( admin_url( 'plugins.php') ) . '</a></p></div>';
+		include get_stylesheet_directory() . '/inc/no-timber-admin.php';
 	});
-	
 	add_filter('template_include', function($template) {
 		return get_stylesheet_directory() . '/static/no-timber.html';
 	});
-	
 	return;
 }
 
 use Timber\Site;
+use Timber\Menu;
 use Timber\Twig_Function;
 use Timber\ImageHelper;
 
-/*
-	Where to look for Twig templates.
- */
+/* The folder(s) containing Twig templates. */
 Timber::$dirname = array('templates');
+
+/* Twig template cache */
 Timber::$cache = true;
 
 class LatheSite extends Site {
 
 	const ASSETS_PATH = '/static/dist/';
 	const MANIFEST_FILE = 'parcel-manifest.json';
-
+	static $__manifest__ = false;
+	
 	/*
 		The set of image sizes used for the `size()` Twig filter.
 	 */
@@ -35,11 +35,72 @@ class LatheSite extends Site {
 		'full' => [1920, 1280, 'center']
 	);
 
-	static $__manifest__ = false;
-
 	function __construct() {
 
-		add_action('after_setup_theme', array($this, 'configure_theme'));
+		/*
+			Configure the theme
+			-------------------
+
+			Setup the theme's capabilities and 
+			attach hooks to relevant filters and actions.
+		 */
+		add_action('after_setup_theme', function() {
+			/*
+				Load translations
+			 */
+			load_theme_textdomain('lathe', get_template_directory() . '/languages');
+
+			/*
+				Enable support for post formats.
+			 */
+			add_theme_support('post-formats');
+
+			/*
+				Enable support for post thumbnails on posts and pages.
+				
+				https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+			 */
+			add_theme_support('post-thumbnails');
+
+			add_theme_support('menus');
+			add_theme_support('html5', array(
+				'comment-list', 
+				'comment-form', 
+				'search-form', 
+				'gallery', 
+				'caption'
+			));
+
+			/*
+				Add support for responsive embedded content.
+			 */
+			add_theme_support('responsive-embeds');
+
+			/*
+				Add default posts and comments RSS feed links to head.
+			 */
+			add_theme_support('automatic-feed-links');
+
+			/* 
+				This denotes that the theme does not set its own 
+				<title> tag, but rather lets WordPress (or plugins)
+				decides what to show.
+
+				The filters below allow us to control aspects
+				of <title> generation from within the theme.
+			*/
+			add_theme_support('title-tag');
+
+			add_filter('document_title_parts', function($title) {
+				// Remove the tagline from the front page
+				unset($title['tagline']);
+				return $title;
+			});
+
+			add_filter('document_title_separator', function($sep) {
+				return '·';
+			});
+		});
 
 		/*
 			Customize the WP Query object.
@@ -86,13 +147,27 @@ class LatheSite extends Site {
 			register_nav_menus($menus);
 		});
 
-		add_action('acf/init', array($this, 'setup_acf'));
+		add_action('acf/init', function() {
+			/* Allow ACF fields and field groups to be translated */
+			add_filter('acf/settings/l10n_textdomain', function() {
+				return 'lathe';
+			});
+			
+			/* Create an Options Page */
+			acf_add_options_page(array(
+				'page_title' => __('Site Options', 'lathe'),
+				'menu_title' => __('Site Options', 'lathe'),
+				'menu_slug' => __('site-options', 'lathe'),
+				'capability' => 'edit_posts',
+				'redirect' => false
+			));
+		});
 
 		add_filter('timber/context', function($context) use ($menus) {
 			// All menus
 			$context['menus'] = [];
 			foreach(array_keys($menus) as $key) {
-				$context['menus'][$key] = new Timber\Menu($key);
+				$context['menus'][$key] = new Menu($key);
 			}
 			$context['menu'] = $context['menus']['main-menu'];
 
@@ -104,106 +179,19 @@ class LatheSite extends Site {
 			return $context;
 		});
 
-		add_filter('timber/twig', array($this, 'configure_twig'));
+		add_filter('timber/twig', function($twig) {
+			/* Twig Functions */
+			$twig->addFunction(new Twig_Function('asset', array($this, 'asset')));
+
+			/* Twig Filters */
+			// TODO: This will need to be changed to Timber\Twig_Filter soon.
+			$twig->addFilter(new Twig_SimpleFilter('size', array($this, 'size')));
+			$twig->addFilter(new Twig_SimpleFilter('asset', array($this, 'asset')));
+
+			return $twig;
+		});
 
 		parent::__construct();
-	}
-
-	/*
-		Configure the theme
-		-------------------
-
-		Setup the theme's capabilities and 
-		attach hooks to relevant filters and actions.
-	 */
-	function configure_theme() {
-
-		/*
-			Load translations
-		 */
-		load_theme_textdomain('lathe', get_template_directory() . '/languages');
-
-		/*
-			Enable support for post formats.
-		 */
-		add_theme_support('post-formats');
-
-		/*
-			Enable support for post thumbnails on posts and pages.
-			
-			https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-		 */
-		add_theme_support('post-thumbnails');
-
-		add_theme_support('menus');
-		add_theme_support('html5', array(
-			'comment-list', 
-			'comment-form', 
-			'search-form', 
-			'gallery', 
-			'caption'
-		));
-
-		/*
-			Add support for responsive embedded content.
-		 */
-		add_theme_support('responsive-embeds');
-
-		/*
-			Add default posts and comments RSS feed links to head.
-		 */
-		add_theme_support('automatic-feed-links');
-
-		/* 
-			This denotes that the theme does not set its own 
-			<title> tag, but rather lets WordPress (or plugins)
-			decides what to show.
-
-			The filters below allow us to control aspects
-			of <title> generation from within the theme.
-		*/
-		add_theme_support('title-tag');
-
-		add_filter('document_title_parts', function($title) {
-			// Remove the tagline from the front page
-			unset($title['tagline']);
-			return $title;
-		});
-
-		add_filter('document_title_separator', function($sep) {
-			return '·';
-		});
-	}
-
-	function setup_acf() {
-		
-		/* Allow ACF fields and field groups to be translated */
-		add_filter('acf/settings/l10n_textdomain', function() {
-			return 'lathe';
-		});
-		
-		/* Create an Options Page */
-		acf_add_options_page(array(
-			'page_title' => __('Site Options', 'lathe'),
-			'menu_title' => __('Site Options', 'lathe'),
-			'menu_slug' => __('site-options', 'lathe'),
-			'capability' => 'edit_posts',
-			'redirect' => false
-		));
-
-	}
-
-	function configure_twig($twig) {
-
-		/* Twig Functions */
-		$twig->addFunction(new Twig_Function('asset', array($this, 'asset')));
-
-		/* Twig Filters */
-		// TODO: This will need to be changed to Timber\Twig_Filter soon.
-		$twig->addFilter(new Twig_SimpleFilter('size', array($this, 'size')));
-		$twig->addFilter(new Twig_SimpleFilter('asset', array($this, 'asset')));
-
-		return $twig;
 	}
 
 	function asset($handle, $enqueue = false) {

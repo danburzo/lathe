@@ -1,5 +1,7 @@
 <?php
 
+use Timber\PostQuery;
+
 /*
 	Context building for archive pages
 	----------------------------------
@@ -30,4 +32,4 @@ if (is_search()) {
 	}
 }
 
-$context['posts'] = new Timber\PostQuery();
+$context['posts'] = new PostQuery();

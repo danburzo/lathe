@@ -1,17 +1,16 @@
 <?php
 
+use Timber\Post;
+
 /*
 	Context building for singular pages
 	-----------------------------------
  */
 
 
-/*
-	Context building
-	----------------
- */
+/* Context building */
 
-$context['post'] = new Timber\Post();
+$context['post'] = new Post();
 
 if (is_page()) {
 
