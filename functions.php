@@ -12,25 +12,30 @@ if (!class_exists('Timber')) {
 	return;
 }
 
+use Timber\Site;
+use Timber\Twig_Function;
+use Timber\ImageHelper;
+
 /*
 	Where to look for Twig templates.
  */
 Timber::$dirname = array('templates');
+Timber::$cache = true;
 
-class LatheSite extends Timber\Site {
+class LatheSite extends Site {
 
-	static $manifest_path = 'parcel-manifest.json';
-	static $assets_path = '/static/dist/';
+	const ASSETS_PATH = '/static/dist/';
+	const MANIFEST_FILE = 'parcel-manifest.json';
 
 	/*
 		The set of image sizes used for the `size()` Twig filter.
 	 */
-	static $image_sizes = array(
+	const IMAGE_SIZES = array(
 		'thumbnail' => [800, 600],
 		'full' => [1920, 1280, 'center']
 	);
 
-	static $__manifest__;
+	static $__manifest__ = false;
 
 	function __construct() {
 
@@ -101,8 +106,6 @@ class LatheSite extends Timber\Site {
 
 		add_filter('timber/twig', array($this, 'configure_twig'));
 
-		$this->load_assets_manifest();
-		
 		parent::__construct();
 	}
 
@@ -190,66 +193,50 @@ class LatheSite extends Timber\Site {
 
 	}
 
-	/*
-		Load the asset manifest file generated 
-		from the front-end build process.
-	 */
-	function load_assets_manifest() {
-		if (is_null(self::$__manifest__)) {
-			$manifest_path = get_template_directory() . 
-				self::$assets_path . 
-				self::$manifest_path;
-
-			if (file_exists($manifest_path)) {
-				self::$__manifest__ = json_decode(
-					file_get_contents($manifest_path), TRUE
-				);
-			}
-		}
-	}
-
 	function configure_twig($twig) {
 
-		/*
-			Twig Functions
-			--------------
-		 */
-		$twig->addFunction(
-			new Timber\Twig_Function('asset', array($this, 'asset'))
-		);
+		/* Twig Functions */
+		$twig->addFunction(new Twig_Function('asset', array($this, 'asset')));
 
-		/*
-			Twig Filters
-			------------
-		 */
-		
-		// TODO: This will need to be changed to the 
-		// `Timber\Twig_Filter` class soon.
-		$twig->addFilter(
-			new Twig_SimpleFilter('size', array($this, 'size'))
-		);
-		
-		$twig->addFilter(
-			new Twig_SimpleFilter('asset', array($this, 'asset'))
-		);
+		/* Twig Filters */
+		// TODO: This will need to be changed to Timber\Twig_Filter soon.
+		$twig->addFilter(new Twig_SimpleFilter('size', array($this, 'size')));
+		$twig->addFilter(new Twig_SimpleFilter('asset', array($this, 'asset')));
 
 		return $twig;
 	}
 
-	function _asset_uri($path) {
-		return get_template_directory_uri() . self::$assets_path . $path;
-	}
-
 	function asset($handle, $enqueue = false) {
+
+		// Manifest file has not been loaded yet, let's do that first.
+		if (self::$__manifest__ === false) {
+			$p = get_template_directory().self::ASSETS_PATH.self::MANIFEST_FILE;
+			if (file_exists($p)) {
+				self::$__manifest__ = json_decode(file_get_contents($p), TRUE);
+			} else {
+				self::$__manifest__ = NULL;
+			}
+		}
+
+		// Manifest not found
+		if (self::$__manifest__ === NULL) {
+			trigger_error("Could not load manifest file", E_USER_WARNING);
+			return;
+		}
+
+		// Handle not found in manifest
 		if (!isset(self::$__manifest__[$handle])) {
 			trigger_error("{$handle} is not defined as an asset", E_USER_WARNING);
 			return;
 		}
+
 		$src = self::$__manifest__[$handle];
-		$uri = $this->_asset_uri($src);
+		$uri = get_template_directory_uri().self::ASSETS_PATH.$src;
+
 		if ($enqueue === false) {
 			return $uri;
 		}
+
 		if ($enqueue === true) {
 			if (preg_match('/\.js$/i', $uri)) {
 				wp_enqueue_script($handle, $uri);
@@ -260,9 +247,10 @@ class LatheSite extends Timber\Site {
 			}
 			return;
 		}
+
 		if ($enqueue === 'inline') {
 			return file_get_contents(
-				get_template_directory() . self::$assets_path . $src
+				get_template_directory() . self::ASSETS_PATH . $src
 			);
 		}
 
@@ -275,12 +263,12 @@ class LatheSite extends Timber\Site {
 			just return the original image.
 		 */
 		$is_svg = preg_match('/[^\?]+\.svg\b/i', $src);
-		if ($is_svg || !isset(self::$image_sizes[$size])) {
+		if ($is_svg || !isset(self::IMAGE_SIZES[$size])) {
 			return $src;
 		}
 
-		$dest = self::$image_sizes[$size];
-		return Timber\ImageHelper::resize(
+		$dest = self::IMAGE_SIZES[$size];
+		return ImageHelper::resize(
 			$src,
 			isset($dest[0]) ? $dest[0] : NULL, 
 			isset($dest[1]) ? $dest[1] : NULL, 
@@ -289,4 +277,4 @@ class LatheSite extends Timber\Site {
 	}
 }
 
-$site = new LatheSite();
+new LatheSite();

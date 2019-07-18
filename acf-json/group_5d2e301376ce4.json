@@ -15,7 +15,7 @@
 				"class": "",
 				"id": ""
 			},
-			"message": "Enable \"Coming Soon\" Page",
+			"message": "Enabled",
 			"default_value": 0,
 			"ui": 0,
 			"ui_on_text": "",
@@ -39,5 +39,5 @@
 	"hide_on_screen": "",
 	"active": 1,
 	"description": "",
-	"modified": 1563308118
+	"modified": 1563433776
 }
