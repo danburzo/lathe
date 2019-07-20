@@ -149,7 +149,7 @@ The `static $image_sizes` definition in `function.php` lets you configure the pr
 
 ## Related projects
 
-This theme is inspired by Timber's own [starter theme](https://github.com/timber/starter-theme).
+This theme is inspired by Timber's own [starter theme](https://github.com/timber/starter-theme) and borrows some tricks from [Skela](https://github.com/Upstatement/skela-wp-theme) by Upstatement.
 
 ## Contributing
 

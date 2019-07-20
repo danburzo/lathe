@@ -1,0 +1,21 @@
+{% set nonce = function('wp_create_nonce', 'clear_twig_cache') %}
+{% set ajaxurl = function('admin_url', 'admin-ajax.php') %}
+
+<div style='text-align: right'>
+	<button id='clear-twig-cache' type='button' class='button button-primary'>
+		Clear Twig Cache
+	</button>
+</div>
+
+<script type="module">
+	document.querySelector('#clear-twig-cache').addEventListener('click', e => {
+		let data = new FormData();
+		data.set('action', 'clear_twig_cache');
+		data.set('_ajax_nonce', '{{ nonce }}');
+		fetch("{{ajaxurl}}", {
+			method: 'POST',
+			contentType: 'multipart/form-data',
+			body: data
+		});
+	});
+</script>

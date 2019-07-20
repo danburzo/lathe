@@ -1,5 +1,11 @@
 <?php
+/*
+	Configure the theme
+	-------------------
 
+	Setup the theme's capabilities and 
+	attach hooks to relevant filters and actions.
+ */
 class ThemeHelper {
 	static function init() {
 			/*

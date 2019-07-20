@@ -1,6 +1,6 @@
 {
 	"name": "lathe",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"main": "index.js",
 	"repository": "git@github.com:forklor/lathe.git",
 	"author": "Dan Burzo <danburzo@gmail.com>",

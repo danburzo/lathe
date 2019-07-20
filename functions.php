@@ -2,7 +2,7 @@
 
 if (!class_exists('Timber')) {
 	add_action('admin_notices', function() {
-		include get_stylesheet_directory() . '/inc/messages/no-timber-admin.php';
+		include get_stylesheet_directory() . '/src/messages/no-timber-admin.php';
 	});
 	add_filter('template_include', function($template) {
 		return get_stylesheet_directory() . '/static/no-timber.html';
@@ -14,42 +14,25 @@ use Timber\Site;
 use Timber\Menu;
 use Timber\Twig_Function;
 
-require get_template_directory() . '/inc/AssetHelper.php';
-require get_template_directory() . '/inc/ImageHelper.php';
-require get_template_directory() . '/inc/ThemeHelper.php';
+require get_template_directory() . '/src/AssetHelper.php';
+require get_template_directory() . '/src/ImageHelper.php';
+require get_template_directory() . '/src/ThemeHelper.php';
 
 /* The folder(s) containing Twig templates. */
 Timber::$dirname = array('templates');
 
 /* Twig template cache */
 Timber::$cache = defined(WP_DEBUG) ? WP_DEBUG : false;
-Routes::map('maintenance/clear-twig-cache', function() {
-	if (is_user_logged_in()) {
-		$loader = new Timber\Loader();
-		$loader->clear_cache_twig();
-		echo 'Twig cache cleared.';
-		exit(0);
-	}
-});
 
 class LatheSite extends Site {
 
 	function __construct() {
 
-		/*
-			Configure the theme
-			-------------------
-
-			Setup the theme's capabilities and 
-			attach hooks to relevant filters and actions.
-		 */
 		add_action('after_setup_theme', function() {
 
 			AssetHelper::init('/static/dist/');
 			
-			/*
-				The set of image sizes used for the `size()` Twig filter.
-	 		*/
+			/* The set of image sizes used for the `size()` Twig filter */
 			ImageHelper::init(array(
 				'thumbnail' => [800, 600],
 				'full' => [1920, 1280, 'center']
@@ -58,10 +41,7 @@ class LatheSite extends Site {
 			ThemeHelper::init();
 		});
 
-		/*
-			Custom menu locations
-			---------------------
-		*/
+		/* Custom menu locations */
 		$menus = array(
 			'main-menu' => __('Main Menu', 'lathe'),
 			'footer-menu' => __('Footer Menu', 'lathe'),
@@ -72,6 +52,7 @@ class LatheSite extends Site {
 		add_action('init', function() use ($menus) {
 			register_nav_menus($menus);
 		});
+		// https://codex.wordpress.org/Plugin_API/Admin_Screen_Reference
 
 		add_action('acf/init', function() {
 			/* Allow ACF fields and field groups to be translated */
@@ -80,13 +61,32 @@ class LatheSite extends Site {
 			});
 			
 			/* Create an Options Page */
-			acf_add_options_page(array(
+			$options_page = acf_add_options_page(array(
 				'page_title' => __('Site Options', 'lathe'),
 				'menu_title' => __('Site Options', 'lathe'),
 				'menu_slug' => __('site-options', 'lathe'),
 				'capability' => 'edit_posts',
 				'redirect' => false
 			));
+		});
+
+		add_action( 'acf/input/admin_head', function() {
+			add_meta_box(
+				'site-options-actions', 
+				__('Actions', 'lathe'), 
+				function() {
+					Timber::render('admin/metabox/actions.twig');
+				},
+				"acf_options_page",
+				"side"
+			);
+		});
+
+		add_action('wp_ajax_clear_twig_cache', function() {
+			if (check_ajax_referer('clear_twig_cache')) {
+				$loader = new Timber\Loader();
+				$loader->clear_cache_twig();
+			}
 		});
 
 		add_filter('timber/context', function($context) use ($menus) {
