@@ -1,6 +1,8 @@
 {% set nonce = function('wp_create_nonce', 'clear_twig_cache') %}
 {% set ajaxurl = function('admin_url', 'admin-ajax.php') %}
 
+<p>{{__("The Twig Cache improves speed, but changes you make to your Twig templates will not be reflected. You can clear the cache below:", "lathe")}}</p>
+
 <div style='text-align: right'>
 	<button id='clear-twig-cache' type='button' class='button button-primary'>
 		Clear Twig Cache
