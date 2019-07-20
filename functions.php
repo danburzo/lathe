@@ -22,7 +22,7 @@ require get_template_directory() . '/src/ThemeHelper.php';
 Timber::$dirname = array('templates');
 
 /* Twig template cache */
-Timber::$cache = defined(WP_DEBUG) ? WP_DEBUG : false;
+Timber::$cache = defined('WP_DEBUG') ? WP_DEBUG === false : false;
 
 class LatheSite extends Site {
 
