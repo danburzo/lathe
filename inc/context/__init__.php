@@ -38,7 +38,7 @@ $templates = array('index.twig');
 	a path to a file from the `/context` folder.
  */
 function context_path($path) {
-	return get_template_directory() . '/context/' . $path;
+	return get_template_directory() . '/inc/context/' . $path;
 }
 
 if (is_404()) {

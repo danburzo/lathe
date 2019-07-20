@@ -2,7 +2,7 @@
 
 if (!class_exists('Timber')) {
 	add_action('admin_notices', function() {
-		include get_stylesheet_directory() . '/inc/no-timber-admin.php';
+		include get_stylesheet_directory() . '/inc/messages/no-timber-admin.php';
 	});
 	add_filter('template_include', function($template) {
 		return get_stylesheet_directory() . '/static/no-timber.html';
@@ -13,7 +13,10 @@ if (!class_exists('Timber')) {
 use Timber\Site;
 use Timber\Menu;
 use Timber\Twig_Function;
-use Timber\ImageHelper;
+
+require get_template_directory() . '/inc/AssetHelper.php';
+require get_template_directory() . '/inc/ImageHelper.php';
+require get_template_directory() . '/inc/ThemeHelper.php';
 
 /* The folder(s) containing Twig templates. */
 Timber::$dirname = array('templates');
@@ -31,18 +34,6 @@ Routes::map('maintenance/clear-twig-cache', function() {
 
 class LatheSite extends Site {
 
-	const ASSETS_PATH = '/static/dist/';
-	const MANIFEST_FILE = 'parcel-manifest.json';
-	static $__manifest__ = false;
-	
-	/*
-		The set of image sizes used for the `size()` Twig filter.
-	 */
-	const IMAGE_SIZES = array(
-		'thumbnail' => [800, 600],
-		'full' => [1920, 1280, 'center']
-	);
-
 	function __construct() {
 
 		/*
@@ -53,92 +44,19 @@ class LatheSite extends Site {
 			attach hooks to relevant filters and actions.
 		 */
 		add_action('after_setup_theme', function() {
-			/*
-				Load translations
-			 */
-			load_theme_textdomain('lathe', get_template_directory() . '/languages');
 
+			AssetHelper::init('/static/dist/');
+			
 			/*
-				Enable support for post formats.
-			 */
-			add_theme_support('post-formats');
-
-			/*
-				Enable support for post thumbnails on posts and pages.
-				
-				https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-			 */
-			add_theme_support('post-thumbnails');
-
-			add_theme_support('menus');
-			add_theme_support('html5', array(
-				'comment-list', 
-				'comment-form', 
-				'search-form', 
-				'gallery', 
-				'caption'
+				The set of image sizes used for the `size()` Twig filter.
+	 		*/
+			ImageHelper::init(array(
+				'thumbnail' => [800, 600],
+				'full' => [1920, 1280, 'center']
 			));
 
-			/*
-				Add support for responsive embedded content.
-			 */
-			add_theme_support('responsive-embeds');
-
-			/*
-				Add default posts and comments RSS feed links to head.
-			 */
-			add_theme_support('automatic-feed-links');
-
-			/* 
-				This denotes that the theme does not set its own 
-				<title> tag, but rather lets WordPress (or plugins)
-				decides what to show.
-
-				The filters below allow us to control aspects
-				of <title> generation from within the theme.
-			*/
-			add_theme_support('title-tag');
-
-			add_filter('document_title_parts', function($title) {
-				// Remove the tagline from the front page
-				unset($title['tagline']);
-				return $title;
-			});
-
-			add_filter('document_title_separator', function($sep) {
-				return '·';
-			});
+			ThemeHelper::init();
 		});
-
-		/*
-			Customize the WP Query object.
-
-			This only applies to the main query on the page,
-			and only on the user-facing website.
-		 */
-		add_action('pre_get_posts', function($query) {
-			if (is_admin() || !$query->is_main_query()) {
-				return;
-			}
-
-			/*
-				For post type archives, ony show the top-level posts.
-			 */
-			if ($query->is_post_type_archive()) {
-				if ($query->query_vars['post_parent'] == false) {
-					$query->set('post_parent', 0);
-				}
-			}
-		});
-
-		/* 
-			Fixes issue with nesting in the Menu editor
-			Reference: https://core.trac.wordpress.org/ticket/18282
-		*/
-		add_filter('nav_menu_meta_box_object', function($obj) {
-			$obj->_default_query = array('posts_per_page' => -1);
-			return $obj;
-		}, 9);
 
 		/*
 			Custom menu locations
@@ -202,74 +120,12 @@ class LatheSite extends Site {
 		parent::__construct();
 	}
 
-	function asset($handle, $enqueue = false) {
-
-		// Manifest file has not been loaded yet, let's do that first.
-		if (self::$__manifest__ === false) {
-			$p = get_template_directory().self::ASSETS_PATH.self::MANIFEST_FILE;
-			if (file_exists($p)) {
-				self::$__manifest__ = json_decode(file_get_contents($p), TRUE);
-			} else {
-				self::$__manifest__ = NULL;
-			}
-		}
-
-		// Manifest not found
-		if (self::$__manifest__ === NULL) {
-			trigger_error("Could not load manifest file", E_USER_WARNING);
-			return;
-		}
-
-		// Handle not found in manifest
-		if (!isset(self::$__manifest__[$handle])) {
-			trigger_error("{$handle} is not defined as an asset", E_USER_WARNING);
-			return;
-		}
-
-		$src = self::$__manifest__[$handle];
-		$uri = get_template_directory_uri().self::ASSETS_PATH.$src;
-
-		if ($enqueue === false) {
-			return $uri;
-		}
-
-		if ($enqueue === true) {
-			if (preg_match('/\.js$/i', $uri)) {
-				wp_enqueue_script($handle, $uri);
-			} else if (preg_match('/\.css$/i', $uri)) {
-				wp_enqueue_style($handle, $uri);
-			} else {
-				trigger_error("Can't enqueue {$handle}", E_USER_WARNING);
-			}
-			return;
-		}
-
-		if ($enqueue === 'inline') {
-			return file_get_contents(
-				get_template_directory() . self::ASSETS_PATH . $src
-			);
-		}
-
-		trigger_error("Undefined mode {$enqueue}", E_USER_WARNING);
+	function asset($handle, $enqueue) {
+		return AssetHelper::asset($handle, $enqueue);
 	}
 
-	function size($src, $size = '') {
-		/*
-			For SVG files, or for when the size was not found,
-			just return the original image.
-		 */
-		$is_svg = preg_match('/[^\?]+\.svg\b/i', $src);
-		if ($is_svg || !isset(self::IMAGE_SIZES[$size])) {
-			return $src;
-		}
-
-		$dest = self::IMAGE_SIZES[$size];
-		return ImageHelper::resize(
-			$src,
-			isset($dest[0]) ? $dest[0] : NULL, 
-			isset($dest[1]) ? $dest[1] : NULL, 
-			isset($dest[2]) ? $dest[2] : NULL
-		);
+	function size($src, $size) {
+		return ImageHelper::size($src, $size);
 	}
 }
 
