@@ -89,6 +89,12 @@ class LatheSite extends Site {
 			}
 		});
 
+		add_action('wp_ajax_flush_rewrites', function() {
+			if (check_ajax_referer('flush_rewrites')) {
+				flush_rewrite_rules();
+			}
+		});
+
 		add_filter('timber/context', function($context) use ($menus) {
 			// All menus
 			$context['menus'] = [];
