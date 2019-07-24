@@ -17,6 +17,7 @@ use Timber\Twig_Function;
 require get_template_directory() . '/src/AssetHelper.php';
 require get_template_directory() . '/src/ImageHelper.php';
 require get_template_directory() . '/src/ThemeHelper.php';
+require get_template_directory() . '/src/ACFHelper.php';
 
 /* The folder(s) containing Twig templates. */
 Timber::$dirname = array('templates');
@@ -30,6 +31,7 @@ class LatheSite extends Site {
 
 		add_action('after_setup_theme', function() {
 
+			ThemeHelper::init();
 			AssetHelper::init('/static/dist/');
 			
 			/* The set of image sizes used for the `size()` Twig filter */
@@ -38,7 +40,7 @@ class LatheSite extends Site {
 				'full' => [1920, 1280, 'center']
 			));
 
-			ThemeHelper::init();
+			ACFHelper::init();
 		});
 
 		/* Custom menu locations */
@@ -51,48 +53,6 @@ class LatheSite extends Site {
 		/* Register menu locations */
 		add_action('init', function() use ($menus) {
 			register_nav_menus($menus);
-		});
-		// https://codex.wordpress.org/Plugin_API/Admin_Screen_Reference
-
-		add_action('acf/init', function() {
-			/* Allow ACF fields and field groups to be translated */
-			add_filter('acf/settings/l10n_textdomain', function() {
-				return 'lathe';
-			});
-			
-			/* Create an Options Page */
-			$options_page = acf_add_options_page(array(
-				'page_title' => __('Site Options', 'lathe'),
-				'menu_title' => __('Site Options', 'lathe'),
-				'menu_slug' => __('site-options', 'lathe'),
-				'capability' => 'edit_posts',
-				'redirect' => false
-			));
-		});
-
-		add_action( 'acf/input/admin_head', function() {
-			add_meta_box(
-				'site-options-actions', 
-				__('Actions', 'lathe'), 
-				function() {
-					Timber::render('admin/metabox/actions.twig');
-				},
-				"acf_options_page",
-				"side"
-			);
-		});
-
-		add_action('wp_ajax_clear_twig_cache', function() {
-			if (check_ajax_referer('clear_twig_cache')) {
-				$loader = new Timber\Loader();
-				$loader->clear_cache_twig();
-			}
-		});
-
-		add_action('wp_ajax_flush_rewrites', function() {
-			if (check_ajax_referer('flush_rewrites')) {
-				flush_rewrite_rules();
-			}
 		});
 
 		add_filter('timber/context', function($context) use ($menus) {
