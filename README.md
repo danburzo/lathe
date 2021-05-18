@@ -34,14 +34,14 @@ Keep the [Timber docs](https://timber.github.io/docs/) handy for reference as yo
 
 ### Static assets bundling
 
-This theme is set up to process CSS, JavaScript, and other static assets with [Parcel](https://parceljs.org/). You'll need to have Node and Yarn installed to use static assets bundling. Run `yarn` in your theme folder to install all the dependencies.
+This theme is set up to process CSS, JavaScript, and other static assets with [Parcel](https://parceljs.org/). You'll need to have Node and npm installed to use static assets bundling. Run `npm install` in your theme folder to install all the dependencies.
 
 #### npm scripts
 
 There are a couple of scripts available:
 
--   `yarn start` — builds the assets in development mode and watches for changes
--   `yarn build` — builds the assets for production
+-   `npm run start` — builds the assets in development mode and watches for changes
+-   `npm run build` — builds the assets for production
 
 > The bundles are _automatically_ generated in the `static/dist` folder. If you change these files by hand, they risk being overwritten!
 
