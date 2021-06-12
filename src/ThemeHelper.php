@@ -14,11 +14,6 @@ class ThemeHelper {
 			load_theme_textdomain('lathe', get_template_directory() . '/languages');
 
 			/*
-				Enable support for post formats.
-			 */
-			add_theme_support('post-formats');
-
-			/*
 				Enable support for post thumbnails on posts and pages.
 				
 				https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
@@ -31,7 +26,10 @@ class ThemeHelper {
 				'comment-form', 
 				'search-form', 
 				'gallery', 
-				'caption'
+				'caption',
+				'style',
+				'script',
+				'navigation-widgets'
 			));
 
 			/*

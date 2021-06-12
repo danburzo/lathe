@@ -10,7 +10,7 @@ use Timber\PostQuery;
 array_unshift($templates, 'archive/archive.twig');
 
 if (is_search()) {
-	$context['title'] = get_search_query();
+	$context['title'] = __('Results for: ', 'lathe') . get_search_query();
 	array_unshift($templates, 'search.twig');
 } else if (is_day()) {
 	$context['title'] = 'Archive: '. get_the_date('D M Y');
@@ -24,6 +24,7 @@ if (is_search()) {
 	$context['title'] = single_cat_title('', false);
 	array_unshift($templates, 'archive/archive-' . get_query_var('cat') . '.twig');
 } else if (is_post_type_archive()) {
+	$context['title'] = post_type_archive_title('', false);
 	$p_type = get_post_type();
 	array_unshift($templates, "archive/archive-{$p_type}.twig");
 	$post_type_include = context_path("archive-{$p_type}.php");

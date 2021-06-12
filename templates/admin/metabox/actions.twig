@@ -2,35 +2,14 @@
 
 <p>{{__("The Twig Cache improves speed, but changes you make to your Twig templates will not be reflected. You can clear the cache below:", "lathe")}}</p>
 
-<button 
-	type='button' class='button button-primary'
-	data-action='clear_twig_cache' 
-	data-nonce="{{function('wp_create_nonce', 'clear_twig_cache')}}" >
-	Clear Twig Cache
-</button>
+{% include 'admin/ajax-action-form.twig' with {
+	action: 'clear_twig_cache',
+	label: 'Clear Twig Cache'
+} %}
 
 <p>{{__("You can flush rewrite rules after you make changes to custom post types, and other things that affect permalinks.", "lathe")}}</p>
 
-<button 
-	type='button' class='button button-primary'
-	data-action='flush_rewrites' 
-	data-nonce="{{function('wp_create_nonce', 'flush_rewrites')}}" >
-	Flush Rewrite Rules
-</button>
-
-<script type="module">
-	Array.from(
-		document.querySelectorAll('button[data-action]')
-	).forEach(el => {
-		el.addEventListener('click', e => {
-			let data = new FormData();
-			data.set('action', e.target.dataset.action);
-			data.set('_ajax_nonce', e.target.dataset.nonce);
-			fetch("{{ajaxurl}}", {
-				method: 'POST',
-				contentType: 'multipart/form-data',
-				body: data
-			});
-		});
-	});
-</script>
+{% include 'admin/ajax-action-form.twig' with {
+	action: 'flush_rewrites',
+	label: 'Flush Rewrite Rules'
+} %}

@@ -10,14 +10,23 @@ if (!class_exists('Timber')) {
 	return;
 }
 
+/* 
+	Disable some WPML clutter
+*/
+define('ICL_DONT_LOAD_NAVIGATION_CSS', true);
+define('ICL_DONT_LOAD_LANGUAGE_SELECTOR_CSS', true);
+define('ICL_DONT_LOAD_LANGUAGES_JS', true);
+
 use Timber\Site;
 use Timber\Menu;
 use Timber\Twig_Function;
 
+require get_template_directory() . '/src/AdminHelper.php';
 require get_template_directory() . '/src/AssetHelper.php';
 require get_template_directory() . '/src/ImageHelper.php';
 require get_template_directory() . '/src/ThemeHelper.php';
 require get_template_directory() . '/src/ACFHelper.php';
+require get_template_directory() . '/src/CustomTypesHelper.php';
 
 /* The folder(s) containing Twig templates. */
 Timber::$dirname = array('templates');
@@ -31,8 +40,10 @@ class LatheSite extends Site {
 
 		add_action('after_setup_theme', function() {
 
-			ThemeHelper::init();
 			AssetHelper::init('/static/dist/');
+			ThemeHelper::init();
+			AdminHelper::init();
+			CustomTypesHelper::init();
 			
 			/* The set of image sizes used for the `size()` Twig filter */
 			ImageHelper::init(array(
@@ -55,22 +66,62 @@ class LatheSite extends Site {
 			register_nav_menus($menus);
 		});
 
+		/*
+			Add things to the Timber context
+			--------------------------------
+
+			These values can be read directly 
+			in all Twig templates, e.g.:
+
+				{% if options.coming_soon %}
+					Website coming soon!
+				{% endif %}
+
+			Note that more useful things get added 
+			to the Timber context depending on the
+			type of the currently displayed page
+			in the `src/context/` PHP files.
+		 */
 		add_filter('timber/context', function($context) use ($menus) {
-			// All menus
+			/* 
+				Site Menus
+				----------
+			*/
 			$context['menus'] = [];
 			foreach(array_keys($menus) as $key) {
 				$context['menus'][$key] = new Menu($key);
 			}
+			/* Make the main menu accessible under `menu` directly */
 			$context['menu'] = $context['menus']['main-menu'];
 
-			// Site Settings
+			/* 
+				Site Settings
+				-------------
+			*/
 			if (function_exists('get_fields')) {
 				$context['options'] = get_fields('option');
+			}
+
+			/*
+				WPML languages
+				--------------
+			 */
+			if (function_exists('icl_get_languages')) {
+				/* All languages */
+				$context['languages'] = icl_get_languages('skip_missing=0');
+				/* Current language */
+				if (defined('ICL_LANGUAGE_CODE')) {
+					$context['language'] = strtolower(ICL_LANGUAGE_CODE);
+				}
 			}
 
 			return $context;
 		});
 
+		/*
+			Add Twig functions and filters
+			------------------------------
+		 */
 		add_filter('timber/twig', function($twig) {
 			/* Twig Functions */
 			$twig->addFunction(new Twig_Function('asset', array($this, 'asset')));

@@ -1,0 +1,32 @@
+{#
+
+	Component: AJAX Action Form
+	---------------------------
+
+	Given an AJAX `action`, creates a HTML form 
+	that can be submitted to perform the action.
+
+	Properties:
+
+	`action`
+		the AJAX action to be performed
+	`id`
+		(Optional) ID for the form
+	`label`
+		(Optional) label for the form button
+	`visible`
+		By default the form is hidden with CSS. 
+		Use `visible: true` to prevent this.
+#}
+
+<form 
+	method='post' 
+	{% if id %} id='{{id}}' {% endif %}
+	class='wp-ajax-action-form'
+	action='{{function('admin_url', 'admin-ajax.php')}}'
+	{% if not visible %}style='display: none'{% endif %}
+>
+	<input type='hidden' name='action' value='{{action}}'/>
+	<input type='hidden' name='_ajax_nonce' value='{{function('wp_create_nonce', action)}}'/>
+	<button type='submit'>{{ label | default('Submit') }}</button>
+</form>

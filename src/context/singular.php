@@ -82,3 +82,7 @@ if (is_page()) {
 		"single/single-{$context['post']->ID}.twig"
 	);
 }
+
+if (is_front_page()) {
+	array_unshift($templates, 'front.twig');
+}

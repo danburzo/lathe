@@ -4,7 +4,7 @@
 	Author: Dan Burzo
 	Author URI: https://github.com/danburzo
 	Description: A Timber-based WordPress starter theme
-	Version: 0.3
+	Version: 0.4
 	License: GNU General Public License v2 or later
 	License URI: http://www.gnu.org/licenses/gpl-2.0.html
 	Tags: timber, twig
@@ -12,6 +12,24 @@
 
 	Hack away!
 */
+
+html {
+	line-sizing: normal;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+[hidden] {
+	display: none;
+}
+
+pre {
+	white-space: pre-wrap;
+}
 
 header {
 	position: relative;
@@ -27,6 +45,42 @@ header {
 	top: 0;
 }
 
-article img {
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+	display: block;
+	vertical-align: middle;
 	max-width: 100%;
+}
+
+img,
+svg,
+video,
+canvas {
+	height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+	font: inherit;
+	font-size: max(1em, 16px);
+	letter-spacing: inherit;
+}
+
+nav ul {
+	list-style: none;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+nav ul > :not(:last-child) {
+	margin-right: 1em;
 }

@@ -1,12 +1,13 @@
 {
 	"name": "lathe",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"main": "index.js",
 	"repository": "git@github.com:forklor/lathe.git",
-	"author": "Dan Burzo <danburzo@gmail.com>",
+	"author": "Dan Burzo <dan@danburzo.ro>",
 	"license": "MIT",
 	"devDependencies": {
 		"husky": "^4.3.8",
+		"parcel-bundler": "^1.12.5",
 		"parcel-plugin-bundle-manifest": "^0.2.0",
 		"parcel-plugin-imagemin": "^4.0.2",
 		"prettier": "2.3.0",
@@ -34,7 +35,6 @@
 	},
 	"dependencies": {
 		"@segment/in-eu": "^0.3.0",
-		"parcel-bundler": "^1.12.5",
 		"prop-types": "^15.7.2",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
