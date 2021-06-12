@@ -130,6 +130,13 @@ class LatheSite extends Site {
 			// TODO: This will need to be changed to Timber\Twig_Filter soon.
 			$twig->addFilter(new Twig_SimpleFilter('size', array($this, 'size')));
 			$twig->addFilter(new Twig_SimpleFilter('asset', array($this, 'asset')));
+			$twig->addFilter(new Twig_SimpleFilter('hostname', function($url) {
+				return preg_replace(
+					'/[^\da-z]+/i',
+					'-',
+					str_ireplace('www.', '', parse_url($url, PHP_URL_HOST))
+				);
+			}));
 
 			return $twig;
 		});
