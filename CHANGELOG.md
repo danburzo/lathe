@@ -25,6 +25,8 @@ Registers ACF option pages for Custom Post Type archive pages.
 
 Adds the `hostname` Twig filter to extract the hostname from an URL.
 
+Add the `.current_page_parent` class to a CPT archive page in a WordPress menu when visiting a single post of that type. (See [WP Core #38836](https://core.trac.wordpress.org/ticket/38836))
+
 ## 0.3
 
 Introduces a `pre_get_posts` hook for adjusting the main WP Query object. As an example adjustment, post type archives will only show top-level posts of that type, instead of including descendant posts as well.

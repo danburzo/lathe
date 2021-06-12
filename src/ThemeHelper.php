@@ -83,6 +83,34 @@ class ThemeHelper {
 				}
 			});
 
+			/*
+				Add the `.current_page_parent` class to a CPT archive page
+				in a WordPress menu when visiting a single post of that type.
+
+				Reference: https://core.trac.wordpress.org/ticket/38836
+				(The code can be removed once the bug is closed)
+			 */
+			add_filter('nav_menu_css_class', function ($classes, $item) {
+				// Get an array of all public custom post types.
+				$post_types = get_post_types(
+					array(
+						'public'   => true,
+						'_builtin' => false
+					)
+				);
+
+				// Check if a custom post type single item is being viewed.
+				if (is_singular($post_types)) {
+					// Get the post type being viewed.
+					$post_type = get_post_type();
+					if ($post_type === $item->object) {
+						$classes[] = 'current_page_parent';
+					}
+				}
+
+				return $classes;
+			}, 10, 2);
+
 			/* 
 				Fixes issue with nesting in the Menu editor
 				Reference: https://core.trac.wordpress.org/ticket/18282
