@@ -61,20 +61,5 @@ class ACFHelper {
 				}
 			}, 11);	
 		}
-
-		/*
-			Adds a meta-box to the options page.
-		 */
-		add_action('acf/input/admin_head', function() {
-			add_meta_box(
-				'site-options-actions', 
-				__('Actions', 'lathe'), 
-				function() {
-					Timber::render('admin/metabox/actions.twig');
-				},
-				"acf_options_page",
-				"side"
-			);
-		});
 	}
 }
