@@ -49,7 +49,7 @@ class CustomTypesHelper {
 
 /*
 	static function tax_thing_type() {
-		register_taxonomy('thing-type', 'eveniment', array(
+		register_taxonomy('thing-type', 'thing', array(
 			'labels' => array(
 				'name' => __('Thing Types', 'lathe'),
 				'singular_name' => __('Thing Type', 'lathe')
