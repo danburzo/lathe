@@ -4,14 +4,22 @@ use Timber\Loader;
 
 class ACFHelper {
 	static function init() {
+		
+		/* 
+			Allow ACF fields and field groups to be translated.
+		*/
+		add_action('acf/init', function() {	
+			add_filter('acf/settings/l10n_textdomain', function() {
+				return 'lathe';
+			});
+		});
+
 		if (function_exists('acf_add_options_page')) {
-			add_action('acf/init', function() {
-				/* Allow ACF fields and field groups to be translated */
-				add_filter('acf/settings/l10n_textdomain', function() {
-					return 'lathe';
-				});
-				
-				/* Create an Options Page */
+
+			/*
+				Create a Site Options page.
+			 */
+			add_action('acf/init', function() {	
 				acf_add_options_page(array(
 					'page_title' => __('Site Options', 'lathe'),
 					'menu_title' => __('Site Options', 'lathe'),
@@ -54,6 +62,9 @@ class ACFHelper {
 			}, 11);	
 		}
 
+		/*
+			Adds a meta-box to the options page.
+		 */
 		add_action('acf/input/admin_head', function() {
 			add_meta_box(
 				'site-options-actions', 
