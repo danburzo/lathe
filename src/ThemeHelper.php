@@ -119,5 +119,14 @@ class ThemeHelper {
 				$obj->_default_query = array('posts_per_page' => -1);
 				return $obj;
 			}, 9);
+
+			/*
+				Deregister default WordPress Gutenberg block styles.
+				To opt into the feature uncomment the code below:
+				
+				add_action('wp_enqueue_scripts', function() {
+					wp_dequeue_style('wp-block-library');
+				});
+			*/
 	}
 }
