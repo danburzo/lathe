@@ -1,6 +1,6 @@
 /*
 	Theme Name:  My Lathe Theme
-	Theme URI: https://github.com/forklor/lathe
+	Theme URI: https://github.com/danburzo/lathe
 	Author: Dan Burzo
 	Author URI: https://github.com/danburzo
 	Description: A Timber-based WordPress starter theme
@@ -15,6 +15,12 @@
 
 html {
 	line-sizing: normal;
+
+	/*
+		Disable font size inflation on mobile devices
+	 */
+	text-size-adjust: none;
+	-webkit-text-size-adjust: none;
 }
 
 body {

@@ -26,7 +26,7 @@ Here's what you get out of the box:
 
 ### Getting started
 
-The Lathe theme is designed to be cloned and modified to your liking. You can start a GitHub repository [based on this theme](https://github.com/forklor/lathe/generate) or [download it as a ZIP](https://github.com/forklor/lathe/archive/master.zip).
+The Lathe theme is designed to be cloned and modified to your liking. You can start a GitHub repository [based on this theme](https://github.com/danburzo/lathe/generate) or [download it as a ZIP](https://github.com/danburzo/lathe/archive/master.zip).
 
 When you add this theme to your WordPress installation, you'll need to also install the Timber and ACF plugins.
 

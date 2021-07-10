@@ -144,7 +144,7 @@ class LatheSite extends Site {
 		parent::__construct();
 	}
 
-	function asset($handle, $enqueue) {
+	function asset($handle, $enqueue = false) {
 		return AssetHelper::asset($handle, $enqueue);
 	}
 
