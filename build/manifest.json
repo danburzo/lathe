@@ -1,14 +1,11 @@
 {
-	"static/index.js": {
-		"path": "build/index.BNEBFQXO.js",
-		"dependencies": []
-	},
-	"static/admin.js": {
-		"path": "build/admin.GIXBR7AU.js",
-		"dependencies": []
-	},
-	"style.css": {
-		"path": "build/style.2L2HMKRH.css",
-		"dependencies": []
-	}
+  "static/index.js": {
+    "path": "build/index.BNEBFQXO.js"
+  },
+  "static/admin.js": {
+    "path": "build/admin.GIXBR7AU.js"
+  },
+  "style.css": {
+    "path": "build/style.2L2HMKRH.css"
+  }
 }

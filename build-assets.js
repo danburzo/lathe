@@ -14,24 +14,30 @@ const args = opsh(process.argv.slice(2), [
 	'version'
 ]);
 
+/*
+	Display the version when called with -v or --version
+ */
 if (args.options.v || args.options.version) {
 	console.log(pkg.version);
 	process.exit(0);
 }
 
-const outdir = args.options.d || args.options.outdir || 'static/dist';
-const format = args.options.module ? 'esm' : 'iife';
-const task = args.operands[0];
-
-if (!task || args.options.h || args.options.help) {
+/*
+	Display help information when called with -h or --help.
+ */
+if (args.options.h || args.options.help) {
 	outputHelp();
 	process.exit(0);
 }
 
+const task = args.operands[0] || 'build';
 if (task !== 'build' && task !== 'start') {
 	console.log(`Invalid command '${task}', expected 'start' or 'build'.`);
 	process.exit(1);
 }
+
+const outdir = args.options.d || args.options.outdir || 'build';
+const format = args.options.module ? 'esm' : 'iife';
 
 const extSupportedAsEntry = new Set([
 	'.css',
@@ -105,13 +111,12 @@ function extractManifestPlugin(outfile) {
 						if (meta.entryPoint !== '<stdin>') {
 							inpath = meta.entryPoint;
 						}
-					} else if (Object.keys(meta.inputs).length === 1) {
-						inpath = Object.keys(meta.inputs)[0];
+					} else {
+						inpath = Object.keys(meta.inputs).pop();
 					}
 					if (inpath) {
 						manifest[inpath] = {
-							path: outpath,
-							dependencies: []
+							path: outpath
 						};
 					}
 				});
@@ -123,6 +128,9 @@ function extractManifestPlugin(outfile) {
 								manifest[input] &&
 								path.extname(input).match(/\.(css|js)$/)
 							) {
+								if (!manifest[inpath].dependencies) {
+									manifest[inpath].dependencies = [];
+								}
 								manifest[inpath].dependencies.push(input);
 							}
 						}
@@ -202,6 +210,7 @@ Available commands:
   build          Builds the assets for production.
 
 Available options:
+  -d, --outdir   The output directory. The default is 'build'.
   --module       Bundle .js/.jsx/.ts/.tsx files in ES module format.
 
 General options:

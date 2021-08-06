@@ -9,6 +9,16 @@ class AssetHelper {
 		self::$manifest_file = $manifest_file;
 	}
 
+	static function enqueue($handle, $uri) {
+		if (preg_match('/\.js$/i', $uri)) {
+			wp_enqueue_script($handle, $uri);
+		} else if (preg_match('/\.css$/i', $uri)) {
+			wp_enqueue_style($handle, $uri);
+		} else {
+			trigger_error("Can't enqueue {$handle}", E_USER_WARNING);
+		}
+	}
+
 	static function asset($handle, $enqueue = false) {
 		// Manifest file has not been loaded yet, let's do that first.
 		if (self::$__manifest__ === false) {
@@ -33,20 +43,23 @@ class AssetHelper {
 		}
 
 		$entry = self::$__manifest__[$handle];
-		$uri = get_template_directory_uri() . '/' . $entry['path'];
+		$template_dir = get_template_directory_uri() . '/';
+		$uri = $template_dir . $entry['path'];
 
 		if ($enqueue === false) {
 			return $uri;
 		}
 
 		if ($enqueue === true) {
-			if (preg_match('/\.js$/i', $uri)) {
-				wp_enqueue_script($handle, $uri);
-			} else if (preg_match('/\.css$/i', $uri)) {
-				wp_enqueue_style($handle, $uri);
-			} else {
-				trigger_error("Can't enqueue {$handle}", E_USER_WARNING);
+			if (isset($entry['dependencies'])) {
+				foreach($entry['dependencies'] as $dep_handle) {
+					self::enqueue(
+						$dep_handle, 
+						$template_dir . self::$__manifest__[$dep_handle]['path']
+					);
+				}
 			}
+			self::enqueue($handle, $uri);
 			return;
 		}
 
