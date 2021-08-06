@@ -1,5 +1,22 @@
 {
-	"static/index.js": "build/index.J3XOE5P7.js",
-	"static/admin.js": "build/admin.GIXBR7AU.js",
-	"style.css": "build/style.2L2HMKRH.css"
+	"screenshot.png": {
+		"path": "build/screenshot.FI7TZ7NJ.png",
+		"dependencies": []
+	},
+	"static/index.js": {
+		"path": "build/index.NVJFTCU4.js",
+		"dependencies": ["static/my.css"]
+	},
+	"static/my.css": {
+		"path": "build/index.KGIESOSN.css",
+		"dependencies": []
+	},
+	"static/admin.js": {
+		"path": "build/admin.GIXBR7AU.js",
+		"dependencies": []
+	},
+	"style.css": {
+		"path": "build/style.2L2HMKRH.css",
+		"dependencies": []
+	}
 }

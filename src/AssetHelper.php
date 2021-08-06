@@ -32,8 +32,8 @@ class AssetHelper {
 			return;
 		}
 
-		$src = self::$__manifest__[$handle];
-		$uri = get_template_directory_uri() . '/' . $src;
+		$entry = self::$__manifest__[$handle];
+		$uri = get_template_directory_uri() . '/' . $entry['path'];
 
 		if ($enqueue === false) {
 			return $uri;
@@ -52,7 +52,7 @@ class AssetHelper {
 
 		if ($enqueue === 'inline') {
 			return file_get_contents(
-				get_template_directory() . '/' . $src
+				get_template_directory() . '/' . $entry['path']
 			);
 		}
 

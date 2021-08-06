@@ -7,6 +7,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"esbuild": "^0.12.18",
+		"eslint": "^7.32.0",
 		"husky": "^4.3.8",
 		"opsh": "^1.0.0",
 		"prettier": "2.3.2",
@@ -14,7 +15,8 @@
 	},
 	"scripts": {
 		"start": "./build-assets.js start --outdir build",
-		"build": "rm -rf build && ./build-assets.js build --outdir build"
+		"build": "rm -rf build && ./build-assets.js build --outdir build",
+		"lint": "eslint './**/*.js'"
 	},
 	"husky": {
 		"hooks": {

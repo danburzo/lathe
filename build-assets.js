@@ -53,6 +53,18 @@ const extHasLoader = new Set([
 	'.txt'
 ]);
 
+const extCommon = [
+	'.svg',
+	'.png',
+	'.jpg',
+	'.jpeg',
+	'.gif',
+	'.otf',
+	'.ttf',
+	'.woff',
+	'.woff2'
+];
+
 fs.readFile('./assets.txt', 'utf8')
 	.then(file =>
 		file
@@ -79,33 +91,46 @@ function extractManifestPlugin(outfile) {
 		setup(build) {
 			build.onEnd(result => {
 				const manifest = {};
+				if (!result.metafile) {
+					console.info(
+						'No manifest file produced. Error occurred, see above.'
+					);
+					return;
+				}
 				const { outputs } = result.metafile;
 				Object.keys(outputs).forEach(outpath => {
 					const meta = outputs[outpath];
-					let inpath = meta.entryPoint;
+					let inpath;
+					if (meta.entryPoint) {
+						if (meta.entryPoint !== '<stdin>') {
+							inpath = meta.entryPoint;
+						}
+					} else if (Object.keys(meta.inputs).length === 1) {
+						inpath = Object.keys(meta.inputs)[0];
+					}
 					if (inpath) {
-						/*
-							If the entry is marked as an entry point,
-							include it in the manifest.
-						 */
-						if (inpath !== '<stdin>') {
-							manifest[inpath] = outpath;
-						}
-					} else {
-						/*
-							Otherwise look for the files we've required
-							through the `<stdin>` entry, and include those
-							as well in the manifest.
-						 */
-						let inputs = Object.keys(meta.inputs);
-						if (inputs.length === 1) {
-							inpath = inputs[0];
-							if (files.includes(inpath)) {
-								manifest[inpath] = outpath;
-							}
-						}
+						manifest[inpath] = {
+							path: outpath,
+							dependencies: []
+						};
 					}
 				});
+				Object.keys(manifest).forEach(inpath => {
+					Object.keys(outputs[manifest[inpath].path].inputs).forEach(
+						input => {
+							if (
+								input !== inpath &&
+								manifest[input] &&
+								path.extname(input).match(/\.(css|js)$/)
+							) {
+								manifest[inpath].dependencies.push(input);
+							}
+						}
+					);
+				});
+				console.info(
+					`Updated ${outfile} (${new Date().toTimeString()})`
+				);
 				fs.writeFile(outfile, JSON.stringify(manifest, null, 2));
 			});
 		}
@@ -122,9 +147,8 @@ function buildAssets(assets) {
 	/*
 		Treat all files that are 
 	 */
-	const loader = files.reduce(
-		(loader, file) => {
-			const ext = path.extname(file);
+	const loader = extCommon.concat(files.map(path.extname)).reduce(
+		(loader, ext) => {
 			if (ext && !extHasLoader.has(ext)) {
 				loader[ext] = 'file';
 			}

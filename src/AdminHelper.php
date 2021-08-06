@@ -67,11 +67,11 @@ class AdminHelper {
 
 		$admin_script_url = AssetHelper::asset('static/admin.js', false);
 		add_action('admin_enqueue_scripts', function() use ($admin_script_url) {
-			wp_enqueue_script('admin.js', $admin_script_url);
+			wp_enqueue_script('static/admin.js', $admin_script_url);
 		});
 		add_action('wp_enqueue_scripts', function() use ($admin_script_url) {
 			if (is_admin_bar_showing()) {
-				wp_enqueue_script('admin.js', $admin_script_url);
+				wp_enqueue_script('static/admin.js', $admin_script_url);
 			}
 		});
 	}
