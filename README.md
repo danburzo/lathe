@@ -87,7 +87,7 @@ When the page gets rendered, you'll see:
 ></script>
 ```
 
-> The paths to the bundled assets contain _hashes_ — sequences of alphanumeric characters that help deal with the browser cache. Whenever you make a change to a file, its gets a new hash.
+Notice that the paths to the bundled assets contain _hashes_ — sequences of alphanumeric characters that help deal with the browser cache. Whenever you make a change to a file, its gets a new hash.
 
 ## Reference
 

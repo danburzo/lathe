@@ -2,27 +2,28 @@ const fs = require('fs').promises;
 const path = require('path');
 const opsh = require('opsh');
 const esbuild = require('esbuild');
+const pkg = require('./package.json');
 
-const operands = [];
-const options = {};
+const args = opsh(process.argv.slice(2), [
+	'module',
+	'h',
+	'help',
+	'v',
+	'version'
+]);
 
-opsh(process.argv.slice(2), {
-	option(opt, value) {
-		if (value !== undefined) {
-			options[opt] = value;
-		}
-	},
-	operand(operand, opt) {
-		if (opt) {
-			options[opt] = operand;
-		} else {
-			operands.push(operand);
-		}
-	}
-});
+if (args.options.v || args.options.version) {
+	console.log(pkg.version);
+	process.exit(0);
+}
 
-const outDir = options.d || options.outdir || 'static/dist';
-const task = operands[0];
+if (args.options.h || args.options.help) {
+	process.exit(0);
+}
+
+const outDir = args.options.d || args.options.outdir || 'static/dist';
+const format = args.options.module ? 'esm' : 'iife';
+const task = args.operands[0];
 
 if (task !== 'build' && task !== 'start') {
 	console.log(`Invalid task '${task}'`);
@@ -52,6 +53,7 @@ fs.readFile('./assets.txt', 'utf8')
 
 		return esbuild.build({
 			entryPoints,
+			format,
 			stdin: {
 				contents: files.map(f => `require('./${f}');`).join('\n'),
 				resolveDir: __dirname
