@@ -40,7 +40,7 @@ class LatheSite extends Site {
 
 		add_action('after_setup_theme', function() {
 
-			AssetHelper::init('/static/dist/');
+			AssetHelper::init('/build/manifest.json');
 			ThemeHelper::init();
 			AdminHelper::init();
 			CustomTypesHelper::init();

@@ -25,28 +25,28 @@ header {
 	z-index: 100;
 	top: 0;
 }
-audio,
-canvas,
-embed,
-iframe,
 img,
-object,
 svg,
-video {
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
 	display: block;
 	vertical-align: middle;
 	max-width: 100%;
 }
-canvas,
 img,
 svg,
-video {
+video,
+canvas {
 	height: auto;
 }
 button,
 input,
-select,
-textarea {
+textarea,
+select {
 	font: inherit;
 	font-size: max(1em, 16px);
 	letter-spacing: inherit;

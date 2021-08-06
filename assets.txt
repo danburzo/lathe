@@ -1,0 +1,8 @@
+# Front-end scripts
+static/index.js
+
+# Admin scripts
+static/admin.js
+
+# Stylesheets
+style.css
