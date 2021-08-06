@@ -1,1 +1,2 @@
-console.log('Hello World!');
+import another from './another.js';
+console.log(another);

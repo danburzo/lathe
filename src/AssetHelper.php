@@ -2,7 +2,7 @@
 
 class AssetHelper {
 
-	const MANIFEST_FILE = 'parcel-manifest.json';
+	const MANIFEST_FILE = 'manifest.json';
 	static $__manifest__ = false;
 	static $asset_path;
 

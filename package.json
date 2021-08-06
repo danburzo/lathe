@@ -7,15 +7,13 @@
 	"license": "MIT",
 	"devDependencies": {
 		"husky": "^4.3.8",
-		"parcel-bundler": "^1.12.5",
-		"parcel-plugin-bundle-manifest": "^0.2.0",
-		"parcel-plugin-imagemin": "^4.0.2",
 		"prettier": "2.3.2",
-		"pretty-quick": "^3.1.1"
+		"pretty-quick": "^3.1.1",
+		"esbuild": "^0.12.18"
 	},
 	"scripts": {
-		"start": "parcel watch -d static/dist --public-url . --no-source-maps assets-manifest.html",
-		"build": "rm -rf static/dist && parcel build -d static/dist --public-url . --no-source-maps assets-manifest.html"
+		"start": "node .build-assets.js start",
+		"build": "rm -rf static/dist && node .build-assets.js build"
 	},
 	"husky": {
 		"hooks": {
