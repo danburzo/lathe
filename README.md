@@ -34,7 +34,7 @@ Keep the [Timber docs](https://timber.github.io/docs/) handy for reference as yo
 
 ### Static assets bundling
 
-This theme is set up to process CSS, JavaScript, and other static assets with [Parcel](https://parceljs.org/). You'll need to have Node and npm installed to use static assets bundling. Run `npm install` in your theme folder to install all the dependencies.
+This theme is set up to process CSS, JavaScript, and other static assets with [esbuild](https://esbuild.github.io/). You'll need to have Node and npm installed to use static assets bundling. Run `npm install` in your theme folder to install all the dependencies.
 
 #### npm scripts
 
@@ -43,31 +43,25 @@ There are a couple of scripts available:
 -   `npm run start` — builds the assets in development mode and watches for changes
 -   `npm run build` — builds the assets for production
 
-> The bundles are _automatically_ generated in the `static/dist` folder. If you change these files by hand, they risk being overwritten!
+> The bundles are _automatically_ generated in the `build/` folder. If you change these files by hand, they risk being overwritten!
 
 #### Assets Manifest
 
-The set of files to process is defined in the `assets-manifest.html` file, located in the theme's root folder. Here's an example:
+The set of files to process is defined in the `assets.txt` file, located in the theme's root folder. Here's an example:
 
-**asset-manifest.html**
+**assets.txt**
 
-```html
-<script src="static/index.js"></script>
-<link href="style.css" rel="stylesheet" />
+```bash
+# Front-end scripts
+static/index.js
+
+# Stylesheets
+style.css
 ```
 
-These assets are called _entry points_. You will be able to reference them in your theme's code.
+The format is simple: you include one file per line, and lines starting with `#` are considered to be comments, thus ingored by the processor.
 
-You add entry points as you would in a normal HTML file:
-
--   CSS files as `<link rel='stylesheet'>` elements
--   JavaScript as `<script>` elements
--   Images as `<img>` elements
--   ...and so on
-
-> This setup needs some getting used to, but to my mind it's currently [the easiest way](https://github.com/parcel-bundler/parcel/issues/2611) to pair Parcel with a WordPress theme. It may change in a future version, if a better approach emerges.
-
-In your theme code, you can use the [`asset()`](#the-style-function) Twig function to include these assets on the pages that need them. For the two assets included in our example manifest, the equivalent Twig code to include them is:
+In your theme code, use the [`asset()`](#the-style-function) Twig function to include any of these assets on the pages that need them. For the two assets included in our example manifest, the equivalent Twig code to include them is:
 
 **templates/my-template.twig**
 
@@ -84,16 +78,16 @@ When the page gets rendered, you'll see:
 	id="style.css-css"
 	type="text/css"
 	media="all"
-	href="http://example.com/wp-content/themes/lathe/static/dist/style.281d1dd0.css?ver=5.2.2"
+	href="http://example.com/wp-content/themes/lathe/build/style.281d1dd0.css?ver=5.2.2"
 />
 
 <script
 	type="text/javascript"
-	src="http://example.com/wp-content/themes/lathe/static/dist/static.117076fb.js?ver=5.2.2"
+	src="http://example.com/wp-content/themes/lathe/build/index.117076fb.js?ver=5.2.2"
 ></script>
 ```
 
-> The paths to the bundled assets contain _hashes_ — sequences of alphanumeric characters that help deal with the browser cache. A file's hash updates whenever you make a change to the file.
+> The paths to the bundled assets contain _hashes_ — sequences of alphanumeric characters that help deal with the browser cache. Whenever you make a change to a file, its gets a new hash.
 
 ## Reference
 

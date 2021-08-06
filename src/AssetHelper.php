@@ -2,18 +2,17 @@
 
 class AssetHelper {
 
-	const MANIFEST_FILE = 'manifest.json';
 	static $__manifest__ = false;
-	static $asset_path;
+	static $manifest_file = 'manifest.json';
 
-	static function init($asset_path) {
-		self::$asset_path = $asset_path;
+	static function init($manifest_file) {
+		self::$manifest_file = $manifest_file;
 	}
 
 	static function asset($handle, $enqueue = false) {
 		// Manifest file has not been loaded yet, let's do that first.
 		if (self::$__manifest__ === false) {
-			$p = get_template_directory() . self::$asset_path . self::MANIFEST_FILE;
+			$p = get_template_directory() . self::$manifest_file;
 			if (file_exists($p)) {
 				self::$__manifest__ = json_decode(file_get_contents($p), TRUE);
 			} else {
@@ -34,7 +33,7 @@ class AssetHelper {
 		}
 
 		$src = self::$__manifest__[$handle];
-		$uri = get_template_directory_uri() . self::$asset_path . $src;
+		$uri = get_template_directory_uri() . $src;
 
 		if ($enqueue === false) {
 			return $uri;
@@ -53,7 +52,7 @@ class AssetHelper {
 
 		if ($enqueue === 'inline') {
 			return file_get_contents(
-				get_template_directory() . self::$asset_path . $src
+				get_template_directory() . $src
 			);
 		}
 

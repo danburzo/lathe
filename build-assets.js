@@ -1,6 +1,23 @@
 const fs = require('fs').promises;
 const path = require('path');
-const task = process.argv[2];
+const opsh = require('opsh');
+
+const operands = [];
+const options = {};
+
+opsh(process.argv.slice(2), {
+	option(key, value) {},
+	operand(operand, opt) {
+		if (opt) {
+			options[opt] = operand;
+		} else {
+			operands.push(operand);
+		}
+	}
+});
+
+const outDir = options.d || options.outdir || 'static/dist';
+const task = operands[0];
 
 if (task !== 'build' && task !== 'start') {
 	console.log(`Invalid task '${task}'`);
@@ -35,10 +52,11 @@ fs.readFile('./assets.txt', 'utf8')
 				resolveDir: __dirname
 			},
 			bundle: true,
+			minify: task === 'build',
 			watch: task === 'start',
 			entryNames: '[name].[hash]',
 			assetNames: '[name].[hash]',
-			outdir: 'static/dist',
+			outdir: outDir,
 			loader: {
 				'.js': 'jsx',
 				'.mjs': 'jsx',
@@ -69,7 +87,7 @@ fs.readFile('./assets.txt', 'utf8')
 								}
 							});
 							fs.writeFile(
-								'manifest.json',
+								path.join(outDir, 'manifest.json'),
 								JSON.stringify(manifest, null, 2)
 							);
 						});
