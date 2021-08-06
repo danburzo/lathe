@@ -1,2 +1,1 @@
-import another from './another.js';
-console.log(another);
+console.log('hello world');

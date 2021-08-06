@@ -6,6 +6,3 @@ static/admin.js
 
 # Stylesheets
 style.css
-
-# Miscellaneous
-screenshot.png
