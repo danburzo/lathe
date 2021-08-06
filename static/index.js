@@ -1,2 +1,1 @@
-import Button from './button';
-Button();
+console.log('Hello World!');

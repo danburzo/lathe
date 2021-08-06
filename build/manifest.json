@@ -1,14 +1,6 @@
 {
-	"screenshot.png": {
-		"path": "build/screenshot.FI7TZ7NJ.png",
-		"dependencies": []
-	},
 	"static/index.js": {
-		"path": "build/index.NVJFTCU4.js",
-		"dependencies": ["static/my.css"]
-	},
-	"static/my.css": {
-		"path": "build/index.KGIESOSN.css",
+		"path": "build/index.BNEBFQXO.js",
 		"dependencies": []
 	},
 	"static/admin.js": {
