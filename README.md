@@ -59,9 +59,9 @@ static/index.js
 style.css
 ```
 
-The format is simple: you include one file per line, and lines starting with `#` are considered to be comments, thus ingored by the processor.
+The format is very simple: you include one file per line, and lines starting with `#` are considered to be comments and thus ingored by the processor.
 
-In your theme code, use the [`asset()`](#the-style-function) Twig function to include any of these assets on the pages that need them. For the two assets included in our example manifest, the equivalent Twig code to include them is:
+In your theme code, use the [`asset()`](#the-asset-function) Twig function to include any of these assets on the pages that need them. For the two assets included in our example manifest, the equivalent Twig code to include them is:
 
 **templates/my-template.twig**
 
@@ -147,9 +147,4 @@ This theme is inspired by Timber's own [starter theme](https://github.com/timber
 
 ## Contributing
 
-Two things:
-
--   The project is in early development;
--   This is all the PHP I know.
-
-As such, I appreciate any sort of feedback and help.
+Contributions are welcome. Please open a GitHub issue before submitting a pull request, unless the changes are straightforward.

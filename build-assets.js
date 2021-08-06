@@ -1,12 +1,17 @@
 const fs = require('fs').promises;
 const path = require('path');
 const opsh = require('opsh');
+const esbuild = require('esbuild');
 
 const operands = [];
 const options = {};
 
 opsh(process.argv.slice(2), {
-	option(key, value) {},
+	option(opt, value) {
+		if (value !== undefined) {
+			options[opt] = value;
+		}
+	},
 	operand(operand, opt) {
 		if (opt) {
 			options[opt] = operand;
@@ -45,7 +50,7 @@ fs.readFile('./assets.txt', 'utf8')
 			}
 		});
 
-		return require('esbuild').build({
+		return esbuild.build({
 			entryPoints,
 			stdin: {
 				contents: files.map(f => `require('./${f}');`).join('\n'),
