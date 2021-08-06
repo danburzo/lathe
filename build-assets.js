@@ -6,13 +6,49 @@ const opsh = require('opsh');
 const esbuild = require('esbuild');
 const pkg = require('./package.json');
 
-const args = opsh(process.argv.slice(2), [
-	'module',
-	'h',
-	'help',
-	'v',
-	'version'
-]);
+/*
+	The file extensions supported 
+	as entry points in esbuild.
+ */
+const extSupportedAsEntry = /\.(css|mjs|jsx?|tsx?)$/;
+
+/*
+	Since esbuild needs explicit loaders
+	for each file type you want to process,
+	let's include a bunch of common file types
+	to the default loaders.
+ */
+const defaultLoaders = {
+	'.js': 'jsx',
+	'.mjs': 'jsx',
+	'.ts': 'tsx',
+	'.tsx': 'tsx',
+	'.json': 'json',
+	'.txt': 'text',
+	'.svg': 'file',
+	'.png': 'file',
+	'.jpg': 'file',
+	'.jpeg': 'file',
+	'.gif': 'file',
+	'.otf': 'file',
+	'.ttf': 'file',
+	'.woff': 'file',
+	'.woff2': 'file'
+};
+
+const args = opsh(
+	process.argv.slice(2),
+	/* List of boolean CLI options */
+	['module', 'h', 'help', 'v', 'version']
+);
+
+/*
+	Default options
+ */
+const task = args.operands[0] || 'build';
+const infile = args.options.i || args.options.infile || 'assets.txt';
+const outdir = args.options.d || args.options.outdir || 'build';
+const format = args.options.module ? 'esm' : 'iife';
 
 /*
 	Display the version when called with -v or --version
@@ -30,48 +66,12 @@ if (args.options.h || args.options.help) {
 	process.exit(0);
 }
 
-const task = args.operands[0] || 'build';
 if (task !== 'build' && task !== 'start') {
 	console.log(`Invalid command '${task}', expected 'start' or 'build'.`);
 	process.exit(1);
 }
 
-const outdir = args.options.d || args.options.outdir || 'build';
-const format = args.options.module ? 'esm' : 'iife';
-
-const extSupportedAsEntry = new Set([
-	'.css',
-	'.js',
-	'.jsx',
-	'.mjs',
-	'.ts',
-	'.tsx'
-]);
-
-const extHasLoader = new Set([
-	'.css',
-	'.js',
-	'.jsx',
-	'.mjs',
-	'.ts',
-	'.tsx',
-	'.json',
-	'.txt'
-]);
-
-const extCommon = [
-	'.svg',
-	'.png',
-	'.jpg',
-	'.jpeg',
-	'.gif',
-	'.otf',
-	'.ttf',
-	'.woff',
-	'.woff2'
-];
-
-fs.readFile('./assets.txt', 'utf8')
+fs.readFile(infile, 'utf8')
 	.then(file =>
 		file
 			.split(/\n+/)
@@ -83,6 +83,63 @@ fs.readFile('./assets.txt', 'utf8')
 		console.error(err);
 		process.exit(1);
 	});
+
+/*
+	esbuild configuration
+	---------------------
+ */
+function buildAssets(assets) {
+	/*
+		Make a list of files that can't be esbuild entry points, 
+		so that we can bundle them more... creatively.
+	 */
+	const files = assets.filter(f => !f.match(extSupportedAsEntry));
+
+	return esbuild.build({
+		format,
+		outdir,
+		bundle: true,
+		metafile: true,
+		entryPoints: assets.filter(f => f.match(extSupportedAsEntry)),
+
+		/*
+			Files from assets.txt that can't be esbuild entry points 
+			are loaded indirectly by faking a <stdin> input 
+			that `require()`s each individual file.
+		 */
+		stdin: {
+			contents: files.map(f => `require('./${f}');`).join('\n'),
+			resolveDir: __dirname
+		},
+		minify: task === 'build',
+		watch: task === 'start',
+		entryNames: '[name].[hash]',
+		assetNames: '[name].[hash]',
+		/*
+			If we're requesting in the assets.txt file
+			some uncommon file extensions, let's make sure
+			we use the 'file' loader for them, otherwise
+			esbuild will throw an error.
+		 */
+		loader: files.map(path.extname).reduce(
+			(loaders, ext) => {
+				if (ext && !loaders[ext]) {
+					loaders[ext] = 'file';
+				}
+				return loaders;
+			},
+			{ ...defaultLoaders }
+		),
+
+		plugins: [
+			/*
+			 	Extract a `manifest.json` file.
+				Requires the `metafile: true` option.
+			 */
+			extractManifestPlugin(path.join(outdir, 'manifest.json'))
+		]
+	});
+}
 
 /*
 	esbuild plugin: extract manifest file
@@ -139,54 +196,10 @@ function extractManifestPlugin(outfile) {
 				console.info(
 					`Updated ${outfile} (${new Date().toTimeString()})`
 				);
-				fs.writeFile(outfile, JSON.stringify(manifest, null, 2));
+				fs.writeFile(outfile, JSON.stringify(manifest, null, '\t'));
 			});
 		}
 	};
-}
-
-function buildAssets(assets) {
-	const entryPoints = assets.filter(f =>
-		extSupportedAsEntry.has(path.extname(f))
-	);
-
-	const files = assets.filter(f => !extSupportedAsEntry.has(path.extname(f)));
-
-	/*
-		Treat all files that are 
-	 */
-	const loader = extCommon.concat(files.map(path.extname)).reduce(
-		(loader, ext) => {
-			if (ext && !extHasLoader.has(ext)) {
-				loader[ext] = 'file';
-			}
-			return loader;
-		},
-		{
-			'.js': 'jsx',
-			'.mjs': 'jsx'
-		}
-	);
-
-	const fileRequires = files.map(f => `require('./${f}');`).join('\n');
-
-	return esbuild.build({
-		entryPoints,
-		format,
-		stdin: {
-			contents: fileRequires,
-			resolveDir: __dirname
-		},
-		bundle: true,
-		minify: task === 'build',
-		watch: task === 'start',
-		entryNames: '[name].[hash]',
-		assetNames: '[name].[hash]',
-		outdir,
-		loader,
-		plugins: [extractManifestPlugin(path.join(outdir, 'manifest.json'))],
-		metafile: true
-	});
 }
 
 /*
@@ -210,6 +223,8 @@ Available commands:
   build          Builds the assets for production.
 
 Available options:
+  -i, --infile   The input file containting the asset list.
+                 The default is 'assets.txt'.
   -d, --outdir   The output directory. The default is 'build'.
   --module       Bundle .js/.jsx/.ts/.tsx files in ES module format.
 
