@@ -4,6 +4,8 @@ const fs = require('fs').promises;
 const path = require('path');
 const opsh = require('opsh');
 const esbuild = require('esbuild');
+const postcss = require('postcss');
+const autoprefixer = require('autoprefixer');
 const pkg = require('./package.json');
 
 /*
@@ -132,6 +134,9 @@ function buildAssets(assets) {
 		),
 
 		plugins: [
+			postcssPlugin({
+				plugins: [autoprefixer]
+			}),
 			/*
 			 	Extract a `manifest.json` file.
 				Requires the `metafile: true` option.
@@ -139,6 +144,47 @@ function buildAssets(assets) {
 			extractManifestPlugin(path.join(outdir, 'manifest.json'))
 		]
 	});
+}
+
+/*
+	PostCSS plugin
+	--------------
+ */
+function postcssPlugin(options) {
+	let opts = {
+		filter: /\.css$/,
+		plugins: [],
+		namespace: 'postcss-ns',
+		...options
+	};
+
+	const processor = postcss(opts.plugins);
+
+	return {
+		name: 'postcss',
+		setup(build) {
+			build.onResolve({ filter: opts.filter }, args => {
+				return {
+					path: args.path,
+					namespace: opts.namespace
+				};
+			});
+
+			build.onLoad(
+				{ filter: opts.filter, namespace: opts.namespace },
+				async args => {
+					const result = await processor.process(
+						await fs.readFile(args.path, 'utf8'),
+						{ from: args.path }
+					);
+					return {
+						contents: result.css,
+						loader: 'css'
+					};
+				}
+			);
+		}
+	};
 }
 
 /*

@@ -6,10 +6,11 @@
 	"author": "Dan Burzo <dan@danburzo.ro>",
 	"license": "MIT",
 	"devDependencies": {
+		"autoprefixer": "^10.3.1",
 		"esbuild": "^0.12.18",
-		"eslint": "^7.32.0",
 		"husky": "^4.3.8",
 		"opsh": "^1.0.0",
+		"postcss": "^8.3.6",
 		"prettier": "2.3.2",
 		"pretty-quick": "^3.1.1"
 	},
