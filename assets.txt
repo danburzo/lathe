@@ -6,4 +6,3 @@ static/admin.js
 
 # Stylesheets
 style.css
-test.css

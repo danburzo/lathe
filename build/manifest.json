@@ -7,8 +7,5 @@
 	},
 	"postcss-ns:./style.css": {
 		"path": "build/style.AYK3MYLE.css"
-	},
-	"postcss-ns:./test.css": {
-		"path": "build/test.IMZEL7NN.css"
 	}
 }
