@@ -1,3 +1,7 @@
+###################
+# Assets manifest #
+###################
+
 # Front-end scripts
 static/index.js
 

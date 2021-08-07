@@ -72,7 +72,7 @@ if (task !== 'build' && task !== 'start') {
 fs.readFile(infile, 'utf8')
 	.then(file =>
 		file
-			.split(/\n+/)
+			.split(/(?:\r\n|\r|\n|\u2028|\u2029)+/)
 			.filter(l => l && !l.match(/^\s*#/))
 			.map(l => l.trim())
 	)

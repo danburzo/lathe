@@ -5,7 +5,7 @@
 	"static/admin.js": {
 		"path": "build/admin.GIXBR7AU.js"
 	},
-	"postcss-ns:./style.css": {
+	"style.css": {
 		"path": "build/style.AYK3MYLE.css"
 	}
 }
