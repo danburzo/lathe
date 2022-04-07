@@ -31,8 +31,13 @@ require get_template_directory() . '/src/CustomTypesHelper.php';
 /* The folder(s) containing Twig templates. */
 Timber::$dirname = array('templates');
 
-/* Twig template cache */
-Timber::$cache = defined('WP_DEBUG') ? WP_DEBUG === false : false;
+/* 
+	Twig template cache, commented out for now 
+	because it caches things weirdly 
+	for logged-in users in the Dashboard 
+	when WP_DEBUG is off. Must investigate.
+*/
+// Timber::$cache = defined('WP_DEBUG') ? WP_DEBUG === false : false;
 
 class LatheSite extends Site {
 
