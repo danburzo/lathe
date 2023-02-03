@@ -86,14 +86,14 @@ fs.readFile(infile, 'utf8')
 	esbuild configuration
 	---------------------
  */
-function buildAssets(assets) {
+async function buildAssets(assets) {
 	/*
 		Make a list of files that can't be esbuild entry points, 
 		so that we can bundle them more... creatively.
 	 */
 	const files = assets.filter(f => !f.match(extSupportedAsEntry));
 
-	return require('esbuild').build({
+	const context = await require('esbuild').context({
 		format,
 		outdir,
 		bundle: true,
@@ -110,7 +110,6 @@ function buildAssets(assets) {
 			resolveDir: __dirname
 		},
 		minify: task === 'build',
-		watch: task === 'start',
 		entryNames: '[name].[hash]',
 		assetNames: '[name].[hash]',
 		/*
@@ -142,6 +141,13 @@ function buildAssets(assets) {
 			)
 		]
 	});
+
+	if (task === 'start') {
+		await context.watch();
+	} else {
+		await context.rebuild();
+		context.dispose();
+	}
 }
 
 /*
