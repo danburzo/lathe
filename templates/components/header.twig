@@ -15,11 +15,11 @@
 	<a href='{{site.link}}'>{{site.name}}</a>
 
 	<nav>
-		{% 
-			include "components/menu.twig" with {
-				menu: menu.get_items
-			}
-		%}
+	{% 
+		include "components/menu.twig" with {
+			menu: menu.get_items
+		}
+	%}
 	</nav>
 
 	{% include "components/searchbox.twig" %}
@@ -34,5 +34,5 @@
 
 		{% include "components/language-switcher.twig" %} 
 	#}
-
+	
 </header>

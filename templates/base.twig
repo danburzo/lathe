@@ -7,24 +7,52 @@
 
 <!doctype html>
 <html class="no-js" {{site.language_attributes}}>
-	<head>
-		{% include 'components/head.twig' %}
-		{% block head %}
-		{% endblock %}
-	</head>
-	<body class="{{body_class}}">
-		{% block header %}
-			{% include 'components/header.twig' %}
-		{% endblock %}
+<head>
+	{#
+		We are not setting a <title> because 
+		we've defined that our theme supports `title-tag`, 
+		which means WordPress will generate one for us
+		when calling the `wp_head` function.
 
-		<main id='main'>
-			{% block content %}
-				{{__("Sorry, no content", "lathe")}}
-			{% endblock %}
-		</main>
+		If you'd like to hardcode a <title> tag, 
+		remove `add_theme_support('title-tag')` 
+		from `functions.php`.
+	 #}
 
-		{% block footer %}
-			{% include 'components/footer.twig' %}
-		{% endblock %}
-	</body>
+	<meta charset="{{site.charset}}">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<meta name="description" content="{{site.description}}">
+
+	{# Favicon #}
+	<link rel="icon" type="image/png" href="/favicon.png">
+
+	{# Stylesheets #}
+	{{asset('style.css', true)}}
+
+	{# Mark support for JavaScript #}
+	<script>document.documentElement.classList.remove('no-js');</script>
+
+	{# Let WordPress add things to the <head> #}
+	{{function('wp_head')}}
+
+	{# Let templates add things to the <head> #}
+	{% block head %}{% endblock head %}
+</head>
+
+<body class="{{body_class}}">
+	{% block header %}
+		{% include 'components/header.twig' %}
+	{% endblock header %}
+
+	<main id='main'>
+		{% block content %}
+			{{__("Sorry, no content", "lathe")}}
+		{% endblock content %}
+	</main>
+
+	{% block footer %}
+		{% include 'components/footer.twig' %}
+	{% endblock footer %}
+</body>
 </html>

@@ -4,18 +4,18 @@
 #}
 
 <footer role='contentinfo'>
-		<nav>
-			{% 
-				include "components/menu.twig" with {
-					'menu': menus['footer-menu'].get_items
-				} 
-			%}
-			{% 
-				include "components/menu.twig" with {
-					'menu': menus['social-menu'].get_items
-				} 
-			%}
-		</nav>
+	<nav>
+	{% 
+		include "components/menu.twig" with {
+			'menu': menus['footer-menu'].get_items
+		} 
+	%}
+	{% 
+		include "components/menu.twig" with {
+			'menu': menus['social-menu'].get_items
+		} 
+	%}
+	</nav>
 </footer>
 
 {# Allow WordPress to add things #}

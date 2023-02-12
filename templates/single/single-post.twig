@@ -6,12 +6,10 @@
 {% extends "single/single.twig" %}
 
 {% block byline %}
-<header>
-	<h1 class='p-name'>{{ post.title }}</h1>
-	<p>
-		<time class='dt-published' datetime='{{post.post_date | date("c") }}'>
-			{{ post.post_date | date("d/m/Y") }}
-		</time>
-	</p>
-</header>
-{% endblock %}
+<h1>{{ post.title }}</h1>
+<p>
+	<time datetime='{{post.post_date | date("c") }}'>
+		{{ post.post_date | date("d/m/Y") }}
+	</time>
+</p>
+{% endblock byline %}

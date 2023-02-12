@@ -1,9 +1,9 @@
 <ul class='lang'>
-	{% for language in languages %}
-		{% if language.active %} 
-			<li class='lang__item lang__item--active'>{{ language.code }}</li>
-		{% else %}
-			<li class='lang__item'><a href='{{language.url}}'>{{language.code}}</a></li>
-		{% endif %}
-	{% endfor %}
+{% for language in languages %}
+	{% if language.active %} 
+		<li class='lang__item lang__item--active'>{{ language.code }}</li>
+	{% else %}
+		<li class='lang__item'><a href='{{language.url}}'>{{language.code}}</a></li>
+	{% endif %}
+{% endfor %}
 </ul>
