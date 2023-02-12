@@ -6,7 +6,7 @@ Since it's written around it, Lathe requires the [Timber](https://wordpress.org/
 
 Here's what you get out of the box:
 
--   **A neat template structure.** In Twig, templates can extend and override parts of other templates. This allows us to organize our HTML code in chunks that make sense.
+-   **A neat template structure.** In Twig, templates can extend and override parts of other templates. This lets us organize our markup in chunks that make sense.
 -   **A custom (and customizable) template hierarchy.** WordPress's template hierarchy is one of its cooler features, but customizing it is kind of a hassle. That's why, in this house, we manage the template hierarchy ourselves.
 -   **A pipeline for processing static assets.** This unlocks a lot of flexibility to work with whichever flavor of CSS or JavaScript you want.
 -   **Useful pre-made things.** Lathe includes some Twig functions, filters, and components which you can hack to your liking.
@@ -26,11 +26,15 @@ Here's what you get out of the box:
 
 ### Getting started
 
-The Lathe theme is designed to be cloned and modified to your liking. You can start a GitHub repository [based on this theme](https://github.com/danburzo/lathe/generate) or [download it as a ZIP](https://github.com/danburzo/lathe/archive/master.zip).
+Lathe is designed as a starting point for developing your theme. To get started:
 
-When you add this theme to your WordPress installation, you'll need to also install the Timber and ACF plugins.
+-   [Use Lathe as a template](https://github.com/danburzo/lathe/generate) for a new GitHub repository
+-   [Download Lathe as a ZIP](https://github.com/danburzo/lathe/archive/master.zip)
+-   Fetch Lathe from the command line in your current directly with `npx degit danburzo/lathe`
 
-Keep the [Timber docs](https://timber.github.io/docs/) handy for reference as you change the theme.
+When you add the theme to your WordPress installation, make sure install the Timber plugin and, optionally, a version of the ACF plugin.
+
+The [Timber docs](https://timber.github.io/docs/) is a handy reference for developing your theme.
 
 ### Static assets bundling
 
@@ -59,7 +63,7 @@ static/index.js
 style.css
 ```
 
-The format is very simple: you include one file per line, and lines starting with `#` are considered to be comments and thus ingored by the processor.
+The format is simple: you include one file per line, and lines starting with `#` are considered to be comments and thus ingored by the processor.
 
 In your theme code, use the [`asset()`](#the-asset-function) Twig function to include any of these assets on the pages that need them. For the two assets included in our example manifest, the equivalent Twig code to include them is:
 
