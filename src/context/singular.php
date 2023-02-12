@@ -11,6 +11,20 @@ use Timber\Post;
 /* Context building */
 
 $context['post'] = new Post();
+$post_type = $context['post']->post_type;
+
+/*
+	Optional: Include information about the post type archive
+
+	$context['archive'] = array(
+		'title' => apply_filters(
+			'post_type_archive_title', 
+			get_post_type_object($post_type)->labels->name, 
+			$post_type
+		),
+		'link' => get_post_type_archive_link($post_type)
+	);
+*/
 
 if (is_page()) {
 
@@ -24,7 +38,7 @@ if (is_page()) {
 		You can create `single-<post_type>.php` files 
 		in the `/context` folder for customization.
 	*/
-	$inc_post_type = context_path("single-{$context['post']->post_type}.php");
+	$inc_post_type = context_path("single-{$post_type}.php");
 	if (file_exists($inc_post_type)) {
 		require_once $inc_post_type;
 	}
@@ -64,9 +78,9 @@ if (is_page()) {
 	array_unshift(
 		$templates,
 		$context['post']->post_parent ? 
-			"single/single-{$context['post']->post_type}-subpage.twig" :
-			"single/single-{$context['post']->post_type}-root.twig",
-		"single/single-{$context['post']->post_type}.twig",
+			"single/single-{$post_type}-subpage.twig" :
+			"single/single-{$post_type}-root.twig",
+		"single/single-{$post_type}.twig",
 		"single/single.twig"
 	);
 
