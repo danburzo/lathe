@@ -33,6 +33,22 @@ body {
 	display: none;
 }
 
+/*
+	Hide an element visually, while still having it
+	available in the accessibility tree.
+
+	See: https://www.tpgi.com/the-anatomy-of-visually-hidden/
+ */
+.visually-hidden {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
 pre {
 	white-space: pre-wrap;
 }
