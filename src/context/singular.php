@@ -52,6 +52,10 @@ if (is_page_template()) {
 		
 		You can create `<page-template>.php` files 
 		in the `/context` folder for customization.
+
+		Inside these `<page-template>.php` files you can specify:
+
+		$custom_template = 'path-to-custom.twig';
 	*/
 
 	$page_template = get_page_template_slug(get_queried_object_id());
@@ -74,6 +78,13 @@ if (is_page()) {
 		"page-{$context['post']->post_name}.twig", 
 		"page.twig"
 	);
+
+	if (isset($custom_template)) {
+		array_unshift(
+			$templates,
+			$custom_template
+		);
+	}
 } else if (is_single()) {
 	array_unshift(
 		$templates,
