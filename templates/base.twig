@@ -27,14 +27,14 @@
 	{# Favicon #}
 	<link rel="icon" type="image/png" href="/favicon.png">
 
-	{# Stylesheets #}
-	{{asset('style.css', true)}}
-
 	{# Mark support for JavaScript #}
 	<script>document.documentElement.classList.remove('no-js');</script>
 
 	{# Let WordPress add things to the <head> #}
 	{{function('wp_head')}}
+
+	{# Stylesheets #}
+	{{asset('style.css', true)}}
 
 	{# Let templates add things to the <head> #}
 	{% block head %}{% endblock head %}
