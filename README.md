@@ -16,6 +16,7 @@ Here's what you get out of the box:
 -   [Guides](#guides)
     -   [Getting started](#getting-started)
     -   [Static assets bundling](#static-assets-bundling)
+    -   [Custom post types and taxonomies](#custom-post-types-and-taxonomies)
 -   [Reference](#reference)
     -   [Twig functions](#twig-functions)
     -   [Twig filters](#twig-filters)
@@ -92,6 +93,12 @@ When the page gets rendered, you'll see:
 ```
 
 Notice that the paths to the bundled assets contain _hashes_ — sequences of alphanumeric characters that help deal with the browser cache. Whenever you make a change to a file, its gets a new hash.
+
+### Custom post types and taxonomies
+
+Custom Post Types (CPT) and custom taxonomies are ideally handled in dedicated plugins rather than in the theme. Lathe includes sample code for a CPT and a taxonomy in the `wp-plugins` folder.
+
+The `wp-plugins` folder should be excluded when syncing theme files to the server. Instead, its content should be copied separately to the `wp-content/plugins/` folder.
 
 ## Reference
 

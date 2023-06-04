@@ -26,7 +26,6 @@ require get_template_directory() . '/src/AssetHelper.php';
 require get_template_directory() . '/src/ImageHelper.php';
 require get_template_directory() . '/src/ThemeHelper.php';
 require get_template_directory() . '/src/ACFHelper.php';
-require get_template_directory() . '/src/CustomTypesHelper.php';
 
 /* The folder(s) containing Twig templates. */
 Timber::$dirname = array('templates');
