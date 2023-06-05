@@ -6,6 +6,7 @@
 	"author": "Dan Burzo <dan@danburzo.ro>",
 	"license": "MIT",
 	"devDependencies": {
+		"@wp-now/wp-now": "^0.1.53",
 		"autoprefixer": "^10.4.14",
 		"esbuild": "^0.17.19",
 		"opsh": "^1.1.0",
@@ -15,7 +16,8 @@
 	},
 	"scripts": {
 		"prepare": "git config core.hooksPath .git-hooks",
-		"start": "./build-assets.js start",
+		"start": "npx wp-now start",
+		"watch": "./build-assets.js watch",
 		"build": "rm -rf build && ./build-assets.js build",
 		"lint": "eslint './**/*.js'"
 	},

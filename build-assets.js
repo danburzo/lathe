@@ -64,8 +64,8 @@ if (args.options.h || args.options.help) {
 	process.exit(0);
 }
 
-if (task !== 'build' && task !== 'start') {
-	console.log(`Invalid command '${task}', expected 'start' or 'build'.`);
+if (task !== 'build' && task !== 'watch') {
+	console.log(`Invalid command '${task}', expected 'watch' or 'build'.`);
 	process.exit(1);
 }
 
@@ -142,7 +142,7 @@ async function buildAssets(assets) {
 		]
 	});
 
-	if (task === 'start') {
+	if (task === 'watch') {
 		await context.watch();
 	} else {
 		await context.rebuild();
@@ -166,7 +166,7 @@ Usage:
   ./build-assets.js [command] [options]
 
 Available commands:
-  start          Builds the assets in development mode 
+  watch          Builds the assets in development mode 
                  and rebuilds whenever any of the assets change.
   build          Builds the assets for production.
 

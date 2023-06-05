@@ -15,6 +15,7 @@ Here's what you get out of the box:
 
 -   [Guides](#guides)
     -   [Getting started](#getting-started)
+    -   [Local development environment](#local-development-environment)
     -   [Static assets bundling](#static-assets-bundling)
     -   [Custom post types and taxonomies](#custom-post-types-and-taxonomies)
 -   [Reference](#reference)
@@ -30,22 +31,26 @@ Here's what you get out of the box:
 Lathe is designed as a starting point for developing your theme. To get started:
 
 -   [Use Lathe as a template](https://github.com/danburzo/lathe/generate) for a new GitHub repository
--   [Download Lathe as a ZIP](https://github.com/danburzo/lathe/archive/master.zip)
+-   [Download Lathe as a ZIP](https://github.com/danburzo/lathe/archive/main.zip)
 -   Fetch Lathe from the command line in your current directly with `npx degit danburzo/lathe`
+
+Run `npm install` in your theme folder to install all the dependencies.
 
 When you add the theme to your WordPress installation, make sure install the Timber plugin and, optionally, a version of the ACF plugin.
 
 The [Timber docs](https://timber.github.io/docs/) is a handy reference for developing your theme.
 
+### Local development environment
+
+Lathe uses [`wp-now`](https://github.com/WordPress/playground-tools/tree/trunk/packages/wp-now) for local development. The `npm run start` script launches a fully-functional WordPress environment with the theme pre-installed at [`http://localhost:8081`](http://localhost:8081).
+
 ### Static assets bundling
 
-This theme is set up to process CSS, JavaScript, and other static assets with [esbuild](https://esbuild.github.io/). You'll need to have Node and npm installed to use static assets bundling. Run `npm install` in your theme folder to install all the dependencies.
+This theme is set up to process CSS, JavaScript, and other static assets with [esbuild](https://esbuild.github.io/).
 
-#### npm scripts
+There are a couple of npm scripts available:
 
-There are a couple of scripts available:
-
--   `npm run start` — builds the assets in development mode and watches for changes
+-   `npm run watch` — builds the assets in development mode and watches for changes
 -   `npm run build` — builds the assets for production
 
 > The bundles are _automatically_ generated in the `build/` folder. If you change these files by hand, they risk being overwritten!
