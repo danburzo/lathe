@@ -13,19 +13,6 @@ use Timber\Post;
 $context['post'] = new Post();
 $post_type = $context['post']->post_type;
 
-/*
-	Optional: Include information about the post type archive
-
-	$context['archive'] = array(
-		'title' => apply_filters(
-			'post_type_archive_title', 
-			get_post_type_object($post_type)->labels->name, 
-			$post_type
-		),
-		'link' => get_post_type_archive_link($post_type)
-	);
-*/
-
 if (is_page()) {
 
 	// nothing yet
