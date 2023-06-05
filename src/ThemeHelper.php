@@ -63,6 +63,54 @@ class ThemeHelper {
 			});
 
 			/*
+				Register Theme Options
+				----------------------
+
+				See: https://developer.wordpress.org/themes/customize-api/customizer-objects/
+			*/
+			add_action('customize_register', function($wp_customize) {
+
+				function lathe_sanitize_checkbox($value) {
+					return isset($value) && $value == true;
+				}
+
+				$wp_customize->add_setting(
+					'is_coming_soon_enabled', 
+					array(
+						'type' => 'theme_mod',
+						'capability' => 'edit_theme_options',
+						'default' => false,
+						'transport' => 'refresh', // or postMessage
+						'sanitize_callback' => 'lathe_sanitize_checkbox',
+						'sanitize_js_callback' => '', // Basically to_json.
+					)
+				);
+
+				$wp_customize->add_section(
+					'theme_options', 
+					array(
+						'title' => __('Theme Options', 'lathe'),
+						'description' => __('Customize the theme', 'lathe'),
+						'priority' => 160,
+						'capability' => 'edit_theme_options'
+					)
+				);
+
+				$wp_customize->add_control(
+					'is_coming_soon_enabled', 
+					array(
+						'type' => 'checkbox',
+						'priority' => 10,
+						'section' => 'theme_options',
+						'label' => __('Coming soon', 'lathe'),
+						'description' => __('Enable the Coming Soon page for non-logged-in users.', 'lathe'),
+						'active_callback' => ''
+					)
+				);
+			});
+
+
+			/*
 				Customize the WP Query object.
 
 				This only applies to the main query on the page,

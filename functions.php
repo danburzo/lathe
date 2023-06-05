@@ -47,7 +47,6 @@ class LatheSite extends Site {
 			AssetHelper::init('/build/manifest.json');
 			ThemeHelper::init();
 			AdminHelper::init();
-			CustomTypesHelper::init();
 			
 			/* The set of image sizes used for the `size()` Twig filter */
 			ImageHelper::init(array(
@@ -77,7 +76,7 @@ class LatheSite extends Site {
 			These values can be read directly 
 			in all Twig templates, e.g.:
 
-				{% if options.coming_soon %}
+				{% if theme_mods.is_coming_soon_enabled %}
 					Website coming soon!
 				{% endif %}
 
@@ -99,12 +98,10 @@ class LatheSite extends Site {
 			$context['menu'] = $context['menus']['main-menu'];
 
 			/* 
-				Site Settings
-				-------------
+				Theme Mods
+				----------
 			*/
-			if (function_exists('get_fields')) {
-				$context['options'] = get_fields('option');
-			}
+			$context['theme_mods'] = get_theme_mods();
 
 			/*
 				WPML languages

@@ -18,8 +18,8 @@ $context = Timber::context();
 */
 
 if (
-	isset($context['options']) && 
-	$context['options']['is_coming_soon_enabled'] === true &&
+	isset($context['theme_mods']) && 
+	$context['theme_mods']['is_coming_soon_enabled'] === true &&
 	!is_user_logged_in() && !is_admin()
 ) {
 	$templates = array('coming-soon.twig');
