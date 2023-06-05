@@ -61,5 +61,10 @@ class ACFHelper {
 				}
 			}, 11);	
 		}
+		/*
+			Disable the behavior where ACF hides 
+			the default WordPress `Custom fields` metaboxes. 
+		*/
+		add_filter('acf/settings/remove_wp_meta_box', '__return_false');
 	}
 }
